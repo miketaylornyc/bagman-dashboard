@@ -39,9 +39,14 @@ export default function App() {
           padding: '6px 18px', fontWeight: 800, fontSize: 20,
           letterSpacing: 3, display: 'inline-block', marginBottom: 8
         }}>BAG MAN</div>
-        <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 28 }}>
+        <div style={{ color: '#6b7280', fontSize: 13, marginBottom: 20 }}>
           Campaign Dashboard
         </div>
+        <img
+          src="/cover.jpg"
+          alt="Bag Man book cover"
+          style={{ width: 120, borderRadius: 8, boxShadow: '0 6px 24px rgba(0,0,0,0.18)', marginBottom: 24 }}
+        />
         <form onSubmit={handleSubmit}>
           <input
             type="password"
@@ -69,6 +74,14 @@ export default function App() {
             </div>
           )}
         </form>
+        {/* Mike Taylor branding */}
+        <div style={{ marginTop: 28, paddingTop: 18, borderTop: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+          <img src="/mt_medium.jpg" alt="Mike Taylor" style={{ width: 36, height: 36, borderRadius: 8 }} />
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#374151' }}>Prepared by Mike Taylor LLC</div>
+            <div style={{ fontSize: 10, color: '#9ca3af' }}>miketaylor.nyc</div>
+          </div>
+        </div>
       </div>
     </div>
   )

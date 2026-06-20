@@ -235,6 +235,7 @@ export default function Dashboard() {
   const totalPressWt    = rawData?.press?.reduce((s, p) => s + (TIER_META[p.tier]?.weight || 1), 0) || 0
   const organicPct      = totalSales > 0 ? Math.round((totalOrganic / totalSales) * 100) : 0
   const bulkPct         = totalSales > 0 ? Math.round((totalBulk    / totalSales) * 100) : 0
+  const totalCopiesSold = totalSales + 2000 + 200 // + Coach direct + Rotman Canada
   const allSocial       = rawData?.social || []
   const totalSocialViews = allSocial.reduce((s, p) => s + p.views, 0)
   const collabPosts     = allSocial.filter(p => p.collab)
@@ -295,12 +296,10 @@ export default function Dashboard() {
             }}
           />
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 6 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 4 }}>
               <div style={{ background: '#16213e', color: 'white', borderRadius: 8, padding: '5px 14px', fontWeight: 800, fontSize: 18, letterSpacing: 2 }}>BAG MAN</div>
               <div style={{ color: '#6b7280', fontSize: 13 }}>by Lew Frankfort</div>
             </div>
-            <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a2e', margin: 0 }}>Sales & Media Engagement Dashboard</h1>
-            <p style={{ color: '#6b7280', fontSize: 12, marginTop: 4 }}>US Circana/Bookscan · Goodreads · Press · Events · Social</p>
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
@@ -318,11 +317,12 @@ export default function Dashboard() {
 
       {/* Stat Cards */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
-        <StatCard label="Total Bookscan"   value={totalSales.toLocaleString()}     sub="US Circana, all channels"               color={COLORS.organic}      />
-        <StatCard label="Organic Sales"    value={totalOrganic.toLocaleString()}   pct={`${organicPct}% of Bookscan`} sub="Reader-driven retail"   color={COLORS.organicGreen} />
-        <StatCard label="Bulk / Placement" value={totalBulk.toLocaleString()}      pct={`${bulkPct}% of Bookscan`}    sub="Corporate & event / B&N" color="#94a3b8"            />
-        <StatCard label="Press Hits"       value={totalPress}                      pct={`${totalPressWt} weighted pts`} sub="Across all media types" color={COLORS.t1}          />
-        <StatCard label="Events"           value={totalEvents}                     sub={`${totalAttendance.toLocaleString()} total attendees`} color={COLORS.event} />
+        <StatCard label="Total Copies Sold" value={totalCopiesSold.toLocaleString()} sub="Bookscan + Coach + Rotman 🇨🇦" color={COLORS.organicGreen} />
+        <StatCard label="Bookscan"          value={totalSales.toLocaleString()}       sub="US Circana retail only"         color={COLORS.organic}      />
+        <StatCard label="Organic Sales"     value={totalOrganic.toLocaleString()}     pct={`${organicPct}% of Bookscan`}  sub="Reader-driven retail"   color="#4b6a8a"            />
+        <StatCard label="Bulk / Placement"  value={totalBulk.toLocaleString()}        pct={`${bulkPct}% of Bookscan`}     sub="Corporate & event / B&N" color="#94a3b8"           />
+        <StatCard label="Press Hits"        value={totalPress}                        pct={`${totalPressWt} weighted pts`} sub="Across all media types"  color={COLORS.t1}         />
+        <StatCard label="Events"            value={totalEvents}                       sub={`${totalAttendance.toLocaleString()} total attendees`} color={COLORS.event} />
       </div>
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
         {/* Amazon card with star breakdown */}
@@ -719,9 +719,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <p style={{ fontSize: 11, color: '#c4c9d4', textAlign: 'center', marginTop: 20 }}>
-        Internal use only · Lew Frankfort / Bag Man campaign · Data via Google Sheets
-      </p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 20, paddingTop: 16, borderTop: '1px solid #e5e7eb' }}>
+        <img src="/mt_small.jpg" alt="Mike Taylor" style={{ width: 28, height: 28, borderRadius: 6 }} />
+        <div style={{ fontSize: 11, color: '#9ca3af' }}>
+          Prepared by <strong style={{ color: '#6b7280' }}>Mike Taylor LLC</strong> · <a href="https://miketaylor.nyc" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none' }}>miketaylor.nyc</a> · Internal use only
+        </div>
+      </div>
     </div>
   )
 }
