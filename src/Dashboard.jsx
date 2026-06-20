@@ -273,13 +273,25 @@ export default function Dashboard() {
 
       {/* Header */}
       <div style={{ marginBottom: 20, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 6 }}>
-            <div style={{ background: '#16213e', color: 'white', borderRadius: 8, padding: '5px 14px', fontWeight: 800, fontSize: 18, letterSpacing: 2 }}>BAG MAN</div>
-            <div style={{ color: '#6b7280', fontSize: 13 }}>by Lew Frankfort</div>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
+          {/* Book Cover */}
+          <img
+            src="/cover.jpg"
+            alt="Bag Man book cover"
+            style={{
+              width: 72, borderRadius: 6,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.18)',
+              flexShrink: 0
+            }}
+          />
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 6 }}>
+              <div style={{ background: '#16213e', color: 'white', borderRadius: 8, padding: '5px 14px', fontWeight: 800, fontSize: 18, letterSpacing: 2 }}>BAG MAN</div>
+              <div style={{ color: '#6b7280', fontSize: 13 }}>by Lew Frankfort</div>
+            </div>
+            <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a2e', margin: 0 }}>Sales & Media Engagement Dashboard</h1>
+            <p style={{ color: '#6b7280', fontSize: 12, marginTop: 4 }}>US Circana/Bookscan · Goodreads · Press · Events · Social</p>
           </div>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a2e', margin: 0 }}>Sales & Media Engagement Dashboard</h1>
-          <p style={{ color: '#6b7280', fontSize: 12, marginTop: 4 }}>US Circana/Bookscan · Goodreads · Press · Events · Social</p>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
           <button onClick={loadData} style={{
@@ -304,6 +316,16 @@ export default function Dashboard() {
         <StatCard label="GR Added"         value={totalGRAdded.toLocaleString()}   sub="Readers who added book"                 color={COLORS.grAdded}      />
         <StatCard label="Want to Read"     value={totalGRToRead.toLocaleString()}  sub="On reading lists"                       color={COLORS.grToRead}     />
         <StatCard label="GR Ratings"       value={totalGRRatings.toLocaleString()} sub="Goodreads ratings"                      color={COLORS.grRatings}    />
+      </div>
+
+      {/* COACH note */}
+      <div style={{
+        background: '#f0f4ff', border: '1px solid #c7d2fe', borderRadius: 10,
+        padding: '9px 14px', marginBottom: 12, fontSize: 11, color: '#3730a3',
+        display: 'flex', alignItems: 'center', gap: 8
+      }}>
+        <span style={{ fontSize: 14 }}>📦</span>
+        <span><strong>Note:</strong> COACH purchased an additional 2,000 copies direct from the publisher — not captured in Bookscan/retail figures above.</span>
       </div>
 
       {/* Legend */}
