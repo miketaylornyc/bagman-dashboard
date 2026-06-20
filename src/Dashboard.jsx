@@ -370,12 +370,10 @@ export default function Dashboard() {
           <div style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', letterSpacing: 1, marginBottom: 10 }}>GOODREADS</div>
           <div style={{ fontSize: 36, fontWeight: 800, color: COLORS.grRatings, lineHeight: 1 }}>{grAvgRating ?? '—'}</div>
           <div style={{ color: COLORS.grRatings, fontSize: 14, margin: '4px 0' }}>★★★★★</div>
-          <div style={{ fontSize: 11, color: '#374151', fontWeight: 600, marginTop: 8 }}>{totalGRRatings.toLocaleString()} ratings</div>
-          <div style={{ fontSize: 10, color: '#9ca3af' }}>{totalGRReviews} written reviews</div>
+          <div style={{ fontSize: 11, color: '#374151', fontWeight: 600, marginTop: 8 }}>{totalGRRatings.toLocaleString()} ratings · {totalGRReviews} reviews</div>
+          <div style={{ fontSize: 11, color: COLORS.grToRead, fontWeight: 600, marginTop: 4 }}>{totalGRToRead.toLocaleString()} want to read</div>
           {grSnapshotDate && <div style={{ fontSize: 9, color: '#c4c9d4', marginTop: 8 }}>As of {grSnapshotDate}</div>}
         </div>
-        <StatCard label="GR Added"       value={totalGRAdded.toLocaleString()}   sub={grSnapshotDate ? `As of ${grSnapshotDate}` : "Daily export total"} color={COLORS.grAdded}  />
-        <StatCard label="Want to Read"   value={totalGRToRead.toLocaleString()}  sub={grSnapshotDate ? `As of ${grSnapshotDate}` : "Daily export total"} color={COLORS.grToRead} />
       </div>
 
       {/* COACH note */}
@@ -385,7 +383,7 @@ export default function Dashboard() {
         display: 'flex', alignItems: 'center', gap: 8
       }}>
         <span style={{ fontSize: 14 }}>📦</span>
-        <span><strong>Note:</strong> COACH purchased an additional 2,000 copies direct from the publisher — not captured in Bookscan/retail figures above.</span>
+        <span><strong>Sales outside Bookscan:</strong> COACH purchased 2,000 copies direct from the publisher 📦 · Rotman/U of Toronto event sold ~200 copies in Canada 🇨🇦 · Neither is captured in US Bookscan/retail figures above.</span>
       </div>
 
       {/* Legend */}
@@ -417,13 +415,17 @@ export default function Dashboard() {
         {/* COMBINED */}
         {activeTab === 'combined' && (<>
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan + Events + Press</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>★ = event · ◆ color = dominant press tier · GR adds on right axis. Hover for detail.</p>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>★ = event · ◆ color = dominant press tier · GR adds on right axis. Hover for detail.</p>
+          <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, padding: '6px 12px', marginBottom: 12, fontSize: 11, color: '#166534', display: 'flex', gap: 8 }}>
+            <span>📗</span>
+            <span>GR right axis capped at 100 for readability. Publisher paid promotions (Sep 17–24 and Nov 21–Dec 1) drove spikes well above this — see the Goodreads tab for the full picture.</span>
+          </div>
           <ResponsiveContainer width="100%" height={320}>
             <ComposedChart data={derived} margin={{ top: 28, right: 40, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, 100]} />
               <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
