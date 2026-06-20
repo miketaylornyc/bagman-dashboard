@@ -216,9 +216,19 @@ export default function Dashboard() {
   const totalSales      = derived.reduce((s, d) => s + d.sales, 0)
   const totalBulk       = derived.reduce((s, d) => s + d.bulk, 0)
   const totalOrganic    = totalSales - totalBulk
-  const totalGRAdded    = derived.reduce((s, d) => s + d.grAdded, 0)
-  const totalGRToRead   = derived.reduce((s, d) => s + d.grToRead, 0)
-  const totalGRRatings  = derived.reduce((s, d) => s + d.grRatings, 0)
+  const totalGRAdded    = rawData?.grSnapshot?.added      ?? derived.reduce((s, d) => s + d.grAdded, 0)
+  const totalGRToRead   = rawData?.grSnapshot?.wantToRead  ?? derived.reduce((s, d) => s + d.grToRead, 0)
+  const totalGRRatings  = rawData?.grSnapshot?.ratings     ?? derived.reduce((s, d) => s + d.grRatings, 0)
+  const totalGRReviews  = rawData?.grSnapshot?.reviews     ?? derived.reduce((s, d) => s + (d.grReviews || 0), 0)
+  const grAvgRating     = rawData?.grSnapshot?.avgRating      ?? null
+  const grSnapshotDate  = rawData?.grSnapshot?.date           ?? null
+  const amazonReviews   = rawData?.grSnapshot?.amazonReviews   ?? null
+  const amazonAvgRating = rawData?.grSnapshot?.amazonAvgRating ?? null
+  const amazon5Star     = rawData?.grSnapshot?.amazon5Star     ?? null
+  const amazon4Star     = rawData?.grSnapshot?.amazon4Star     ?? null
+  const amazon3Star     = rawData?.grSnapshot?.amazon3Star     ?? null
+  const amazon2Star     = rawData?.grSnapshot?.amazon2Star     ?? null
+  const amazon1Star     = rawData?.grSnapshot?.amazon1Star     ?? null
   const totalEvents     = rawData?.events?.length || 0
   const totalAttendance = rawData?.events?.reduce((s, e) => s + (e.attendance || 0), 0) || 0
   const totalPress      = rawData?.press?.length || 0
@@ -313,9 +323,59 @@ export default function Dashboard() {
         <StatCard label="Bulk / Placement" value={totalBulk.toLocaleString()}      pct={`${bulkPct}% of Bookscan`}    sub="Corporate & event / B&N" color="#94a3b8"            />
         <StatCard label="Press Hits"       value={totalPress}                      pct={`${totalPressWt} weighted pts`} sub="Across all media types" color={COLORS.t1}          />
         <StatCard label="Events"           value={totalEvents}                     sub={`${totalAttendance.toLocaleString()} total attendees`} color={COLORS.event} />
-        <StatCard label="GR Added"         value={totalGRAdded.toLocaleString()}   sub="Readers who added book"                 color={COLORS.grAdded}      />
-        <StatCard label="Want to Read"     value={totalGRToRead.toLocaleString()}  sub="On reading lists"                       color={COLORS.grToRead}     />
-        <StatCard label="GR Ratings"       value={totalGRRatings.toLocaleString()} sub="Goodreads ratings"                      color={COLORS.grRatings}    />
+      </div>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
+        {/* Amazon card with star breakdown */}
+        <div style={{
+          background: 'white', borderRadius: 14, padding: '16px 20px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.06)', flex: '2 1 280px',
+          borderTop: '4px solid #f59e0b'
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', letterSpacing: 1, marginBottom: 10 }}>AMAZON CUSTOMER REVIEWS</div>
+          <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+            <div style={{ textAlign: 'center', minWidth: 80 }}>
+              <div style={{ fontSize: 36, fontWeight: 800, color: '#f59e0b', lineHeight: 1 }}>{amazonAvgRating ?? '—'}</div>
+              <div style={{ color: '#f59e0b', fontSize: 16, margin: '4px 0' }}>★★★★★</div>
+              <div style={{ fontSize: 10, color: '#9ca3af' }}>{amazonReviews ? `${amazonReviews} global ratings` : '—'}</div>
+            </div>
+            <div style={{ flex: 1, minWidth: 160 }}>
+              {[
+                { stars: 5, pct: amazon5Star },
+                { stars: 4, pct: amazon4Star },
+                { stars: 3, pct: amazon3Star },
+                { stars: 2, pct: amazon2Star },
+                { stars: 1, pct: amazon1Star },
+              ].map(({ stars, pct }) => (
+                <div key={stars} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                  <div style={{ fontSize: 10, color: '#6b7280', width: 32, textAlign: 'right', flexShrink: 0 }}>{stars} ★</div>
+                  <div style={{ flex: 1, background: '#f3f4f6', borderRadius: 4, height: 10, overflow: 'hidden' }}>
+                    <div style={{
+                      width: `${pct ?? 0}%`, height: '100%', borderRadius: 4,
+                      background: stars >= 4 ? '#f59e0b' : stars === 3 ? '#94a3b8' : '#ef4444',
+                    }} />
+                  </div>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: stars >= 4 ? '#f59e0b' : '#9ca3af', width: 28, flexShrink: 0 }}>{pct ?? 0}%</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {grSnapshotDate && <div style={{ fontSize: 9, color: '#c4c9d4', marginTop: 10 }}>As of {grSnapshotDate}</div>}
+        </div>
+        {/* Goodreads card */}
+        <div style={{
+          background: 'white', borderRadius: 14, padding: '16px 20px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.06)', flex: '1 1 160px',
+          borderTop: `4px solid ${COLORS.grRatings}`
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', letterSpacing: 1, marginBottom: 10 }}>GOODREADS</div>
+          <div style={{ fontSize: 36, fontWeight: 800, color: COLORS.grRatings, lineHeight: 1 }}>{grAvgRating ?? '—'}</div>
+          <div style={{ color: COLORS.grRatings, fontSize: 14, margin: '4px 0' }}>★★★★★</div>
+          <div style={{ fontSize: 11, color: '#374151', fontWeight: 600, marginTop: 8 }}>{totalGRRatings.toLocaleString()} ratings</div>
+          <div style={{ fontSize: 10, color: '#9ca3af' }}>{totalGRReviews} written reviews</div>
+          {grSnapshotDate && <div style={{ fontSize: 9, color: '#c4c9d4', marginTop: 8 }}>As of {grSnapshotDate}</div>}
+        </div>
+        <StatCard label="GR Added"       value={totalGRAdded.toLocaleString()}   sub={grSnapshotDate ? `As of ${grSnapshotDate}` : "Daily export total"} color={COLORS.grAdded}  />
+        <StatCard label="Want to Read"   value={totalGRToRead.toLocaleString()}  sub={grSnapshotDate ? `As of ${grSnapshotDate}` : "Daily export total"} color={COLORS.grToRead} />
       </div>
 
       {/* COACH note */}
@@ -491,9 +551,13 @@ export default function Dashboard() {
         {activeTab === 'goodreads' && (<>
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Goodreads Activity vs. Press Impact</h2>
           <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>GR lines = left axis · Press weighted score (bars) = right axis · Larger dots = GR paid promo weeks.</p>
+          <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, padding: '7px 12px', marginBottom: 8, fontSize: 11, color: '#166534', display: 'flex', gap: 8 }}>
+            <span>📗</span>
+            <span><strong>Publisher GR Promo #1: Sep 17–24, 2025 (pre-launch)</strong> — ~2,400 adds driven by paid promotion. Falls before Wk 1 so not shown on chart below.</span>
+          </div>
           <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, padding: '7px 12px', marginBottom: 14, fontSize: 11, color: '#166534', display: 'flex', gap: 8 }}>
             <span>📗</span>
-            <span><strong>Publisher GR Paid Promotion: Nov 21–Dec 1 (Wks 6–8)</strong> — GR activity in this window is partly promotion-driven. Larger outlined dots mark affected weeks.</span>
+            <span><strong>Publisher GR Promo #2: Nov 21–Dec 1, 2025 (Wks 6–8)</strong> — GR activity in this window is partly promotion-driven. Larger outlined dots mark affected weeks on the chart.</span>
           </div>
           <ResponsiveContainer width="100%" height={340}>
             <ComposedChart data={derived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
@@ -509,6 +573,7 @@ export default function Dashboard() {
               <Line yAxisId="left" type="monotone" dataKey="grAdded"   name="GR Total Added"  stroke={COLORS.grAdded}   strokeWidth={2.5} dot={makePromoDot(COLORS.grAdded)} />
               <Line yAxisId="left" type="monotone" dataKey="grToRead"  name="GR Want to Read" stroke={COLORS.grToRead}  strokeWidth={2}   dot={makePromoDot(COLORS.grToRead)} />
               <Line yAxisId="left" type="monotone" dataKey="grRatings" name="GR Ratings"      stroke={COLORS.grRatings} strokeWidth={2}   dot={makePromoDot(COLORS.grRatings)} />
+              <Line yAxisId="left" type="monotone" dataKey="grReviews" name="GR Reviews"      stroke="#6366f1"          strokeWidth={2}   dot={makePromoDot('#6366f1')} />
             </ComposedChart>
           </ResponsiveContainer>
         </>)}
@@ -622,7 +687,7 @@ export default function Dashboard() {
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
             <thead>
               <tr style={{ background: '#f8f9fb' }}>
-                {['Week','Dates','Bookscan','Bulk','Organic','Press Hits','Press Pts','Events','Attendance','GR Added','Want to Read','Ratings'].map(h => (
+                {['Week','Dates','Bookscan','Bulk','Organic','Press Hits','Press Pts','Events','Attendance','GR Added','Want to Read','Ratings','Reviews'].map(h => (
                   <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>
@@ -644,6 +709,7 @@ export default function Dashboard() {
                   <td style={{ padding: '6px 10px', color: COLORS.grAdded,   fontWeight: 600 }}>{row.grAdded || '—'}</td>
                   <td style={{ padding: '6px 10px', color: COLORS.grToRead,  fontWeight: 600 }}>{row.grToRead || '—'}</td>
                   <td style={{ padding: '6px 10px', color: COLORS.grRatings, fontWeight: 600 }}>{row.grRatings || '—'}</td>
+                  <td style={{ padding: '6px 10px', color: '#6366f1',        fontWeight: 600 }}>{row.grReviews || '—'}</td>
                 </tr>
               ))}
             </tbody>
