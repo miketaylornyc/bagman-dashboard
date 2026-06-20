@@ -1,27 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // Google Sheets Data Fetcher
-//
-// HOW TO SET UP YOUR SHEET:
-// 1. Create a Google Sheet with these tab names (exact spelling):
-//    - Bookscan
-//    - Press
-//    - Events
-//    - Bulk Orders
-//    - Social
-//
-// 2. Publish the sheet:
-//    File → Share → Publish to web → select "Entire Document" → CSV → Publish
-//    (Do this for each tab, or use the Sheet ID approach below)
-//
-// 3. Get your Sheet ID from the URL:
-//    https://docs.google.com/spreadsheets/d/SHEET_ID_IS_HERE/edit
-//
-// 4. Paste your Sheet ID into SHEET_ID below.
+// Using the published CSV URL format
 // ─────────────────────────────────────────────────────────────────────────────
 
-const SHEET_ID = '1BRt8jvoQCGUvr0fw3sZYXSb8pCBwHakLNbmr3mNY98E'
+// ─────────────────────────────────────────────────────────────────────────────
+// Google Sheets Data Fetcher
+// Using the published CSV URL format
+// ─────────────────────────────────────────────────────────────────────────────
 
-// Tab GIDs — get these from each tab's URL (?gid=XXXXXXXX)
+const BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRwsaaVpf7MVmOmJOubDD9lFyD6diQZ4DapZ1RPgOZzK0_AlOIzywJpavEx0xIUHyvkqkJp-3NqjgMD/pub'
+
 const TABS = {
   bookscan:    '0',
   press:       '206487436',
@@ -30,8 +18,7 @@ const TABS = {
   social:      '552142358',
 }
 
-const csvUrl = (gid) =>
-  `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`
+const csvUrl = (gid) => `${BASE_URL}?output=csv&gid=${gid}`
 
 const parseCSV = (text) => {
   const lines = text.trim().split('\n')
