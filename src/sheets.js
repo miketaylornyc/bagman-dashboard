@@ -77,15 +77,15 @@ export async function fetchAllData() {
     // GR values come from daily Goodreads tab; Bookscan sheet values used as fallback
     const bookscan = parseCSV(bookscanCSV).map(r => {
       const week = r['Week']
-      const grFromDaily = grWeekly[week]
+      const grFromDaily = grWeekly[week] || { grAdded: 0, grRatings: 0, grReviews: 0, grToRead: 0 }
       return {
         week,
         label:        r['Label'],
         sales:        num(r['Sales']),
-        grAdded:      grFromDaily ? grFromDaily.grAdded   : num(r['GR Added']),
-        grToRead:     grFromDaily ? grFromDaily.grToRead  : num(r['GR To Read']),
-        grRatings:    grFromDaily ? grFromDaily.grRatings : num(r['GR Ratings']),
-        grReviews:    grFromDaily ? grFromDaily.grReviews : 0,
+        grAdded:      grFromDaily.grAdded,
+        grToRead:     grFromDaily.grToRead,
+        grRatings:    grFromDaily.grRatings,
+        grReviews:    grFromDaily.grReviews,
         grPromo:      bool(r['GR Promo']),
         pending:      bool(r['Pending']),
         bookscanNote: r['Note'] || '',
