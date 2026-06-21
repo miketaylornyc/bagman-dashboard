@@ -29,14 +29,62 @@ const TYPE_COLOR = {
   'Gala':            '#c9a84c',
 }
 
+function addMarkers(L, map, events, markersRef) {
+  // Clear existing markers
+  markersRef.current.forEach(m => m.remove())
+  markersRef.current = []
+
+  const mappable = events.filter(e => {
+    const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
+    return zip && ZIP_COORDS[zip]
+  })
+
+  const byZip = {}
+  mappable.forEach(e => {
+    const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
+    if (!byZip[zip]) byZip[zip] = []
+    byZip[zip].push(e)
+  })
+
+  Object.entries(byZip).forEach(([zip, evts]) => {
+    const [lat, lng] = ZIP_COORDS[zip]
+    const totalAtt = evts.reduce((s, e) => s + (e.attendance || 0), 0)
+    const radius   = Math.max(8, Math.min(32, Math.sqrt(totalAtt || 20) * 2.5))
+    const color    = TYPE_COLOR[evts[0].type] || '#6b7280'
+    const isCanada = zip === 'M5S1A1'
+
+    const circle = L.circleMarker([lat, lng], {
+      radius,
+      fillColor:   color,
+      fillOpacity: 0.75,
+      color:       isCanada ? '#166534' : 'white',
+      weight:      isCanada ? 3 : 1.5,
+    }).addTo(map)
+
+    const tooltipHtml = evts.map(e =>
+      `<div style="margin-bottom:4px">
+        <strong>${e.name}</strong><br/>
+        ${e.date} · ${e.type}${e.attendance ? ` · ${e.attendance.toLocaleString()} attendees` : ''}
+      </div>`
+    ).join('<hr style="margin:4px 0;border-color:#e5e7eb"/>')
+
+    circle.bindTooltip(tooltipHtml, {
+      permanent: false,
+      direction: 'top',
+      className: 'event-map-tooltip',
+    })
+
+    markersRef.current.push(circle)
+  })
+}
+
 export default function EventMap({ events }) {
-  const mapRef    = useRef(null)
+  const mapRef     = useRef(null)
   const leafletRef = useRef(null)
+  const markersRef = useRef([])
 
+  // Initialize map once
   useEffect(() => {
-    if (leafletRef.current) return // already initialized
-
-    // Dynamically load Leaflet CSS
     if (!document.getElementById('leaflet-css')) {
       const link = document.createElement('link')
       link.id   = 'leaflet-css'
@@ -45,17 +93,20 @@ export default function EventMap({ events }) {
       document.head.appendChild(link)
     }
 
-    // Dynamically load Leaflet JS
+    if (window.L) {
+      initMap(window.L)
+      return
+    }
+
     const script = document.createElement('script')
+    script.id  = 'leaflet-js'
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.onload = () => initMap()
+    script.onload = () => initMap(window.L)
     document.head.appendChild(script)
 
-    function initMap() {
-      const L = window.L
+    function initMap(L) {
       if (!mapRef.current || leafletRef.current) return
 
-      // Bounds: Toronto (top) to southern NJ (bottom)
       const map = L.map(mapRef.current, {
         center: [42.5, -76.0],
         zoom: 6,
@@ -67,49 +118,6 @@ export default function EventMap({ events }) {
         attribution: '© OpenStreetMap contributors',
         maxZoom: 16,
       }).addTo(map)
-
-      // Plot events with zips
-      const mappable = events.filter(e => {
-        const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
-        return zip && ZIP_COORDS[zip]
-      })
-
-      // Group by zip to stack tooltip if multiple events at same location
-      const byZip = {}
-      mappable.forEach(e => {
-        const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
-        if (!byZip[zip]) byZip[zip] = []
-        byZip[zip].push(e)
-      })
-
-      Object.entries(byZip).forEach(([zip, evts]) => {
-        const [lat, lng] = ZIP_COORDS[zip]
-        const totalAtt = evts.reduce((s, e) => s + (e.attendance || 0), 0)
-        const radius   = Math.max(8, Math.min(32, Math.sqrt(totalAtt || 20) * 2.5))
-        const color    = TYPE_COLOR[evts[0].type] || '#6b7280'
-        const isCanada = zip === 'M5S1A1'
-
-        const circle = L.circleMarker([lat, lng], {
-          radius,
-          fillColor:   color,
-          fillOpacity: 0.75,
-          color:       isCanada ? '#166534' : 'white',
-          weight:      isCanada ? 3 : 1.5,
-        }).addTo(map)
-
-        const tooltipHtml = evts.map(e =>
-          `<div style="margin-bottom:4px">
-            <strong>${e.name}</strong><br/>
-            ${e.date} · ${e.type}${e.attendance ? ` · ${e.attendance.toLocaleString()} attendees` : ''}
-          </div>`
-        ).join('<hr style="margin:4px 0;border-color:#e5e7eb"/>')
-
-        circle.bindTooltip(tooltipHtml, {
-          permanent: false,
-          direction: 'top',
-          className: 'event-map-tooltip',
-        })
-      })
 
       // Legend
       const legend = L.control({ position: 'bottomright' })
@@ -128,20 +136,27 @@ export default function EventMap({ events }) {
       legend.addTo(map)
 
       leafletRef.current = map
+
+      // Add markers if events already loaded
+      if (events.length > 0) {
+        addMarkers(L, map, events, markersRef)
+      }
     }
 
     return () => {
       if (leafletRef.current) {
         leafletRef.current.remove()
         leafletRef.current = null
+        markersRef.current = []
       }
     }
   }, [])
 
-  // Re-render markers when events data changes
+  // Re-add markers whenever events data changes (e.g. after sheet loads)
   useEffect(() => {
-    if (!leafletRef.current || !window.L) return
-    // markers are added on init; for live data updates a full re-init handles it
+    if (leafletRef.current && window.L && events.length > 0) {
+      addMarkers(window.L, leafletRef.current, events, markersRef)
+    }
   }, [events])
 
   return (
@@ -157,3 +172,5 @@ export default function EventMap({ events }) {
     />
   )
 }
+
+// Static zip → [lat, lng] lookup
