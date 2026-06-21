@@ -69,13 +69,17 @@ export default function EventMap({ events }) {
       }).addTo(map)
 
       // Plot events with zips
-      const mappable = events.filter(e => e.zip && ZIP_COORDS[e.zip])
+      const mappable = events.filter(e => {
+        const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
+        return zip && ZIP_COORDS[zip]
+      })
 
       // Group by zip to stack tooltip if multiple events at same location
       const byZip = {}
       mappable.forEach(e => {
-        if (!byZip[e.zip]) byZip[e.zip] = []
-        byZip[e.zip].push(e)
+        const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
+        if (!byZip[zip]) byZip[zip] = []
+        byZip[zip].push(e)
       })
 
       Object.entries(byZip).forEach(([zip, evts]) => {
