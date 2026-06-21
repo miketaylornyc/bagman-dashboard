@@ -783,7 +783,7 @@ export default function Dashboard() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 20, paddingTop: 16, borderTop: '1px solid #e5e7eb' }}>
         <img src="/mt_small.jpg" alt="Mike Taylor" style={{ width: 28, height: 28, borderRadius: 6 }} />
         <div style={{ fontSize: 11, color: '#9ca3af' }}>
-          Prepared by <strong style={{ color: '#6b7280' }}>Mike Taylor LLC</strong> · <a href="https://miketaylor.nyc" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none' }}>miketaylor.nyc</a> · Internal use only
+          Powered by <strong style={{ color: '#6b7280' }}>Mike Taylor LLC</strong> · <a href="https://miketaylor.nyc" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none' }}>miketaylor.nyc</a> · Internal use only
         </div>
       </div>
     </div>
