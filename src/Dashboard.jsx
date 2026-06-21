@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { fetchAllData } from './sheets.js'
+import EventMap from './EventMap.jsx'
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, LabelList, Cell
@@ -563,7 +564,7 @@ export default function Dashboard() {
         {activeTab === 'events' && (<>
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Events vs. Organic Sales</h2>
           <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Purple bars = attendance. Dark line = organic sales. Impact often visible the following week.</p>
-          <ResponsiveContainer width="100%" height={320}>
+          <ResponsiveContainer width="100%" height={280}>
             <ComposedChart data={derived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
@@ -575,6 +576,38 @@ export default function Dashboard() {
               <Line yAxisId="right" type="monotone" dataKey="organic" name="Organic Sales" stroke={COLORS.organic} strokeWidth={2.5} dot={{ r: 4, fill: COLORS.organic }} />
             </ComposedChart>
           </ResponsiveContainer>
+
+          {/* Event Map */}
+          <div style={{ marginTop: 24 }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Event Locations</h3>
+            <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Toronto to NYC · Circle size = attendance · Zoom in to see individual NYC venues</p>
+            <EventMap events={rawData?.events || []} />
+          </div>
+
+          {/* Events table */}
+          <div style={{ marginTop: 20 }}>
+            <h3 style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e', margin: '0 0 10px' }}>All Events</h3>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+              <thead>
+                <tr style={{ background: '#f8f9fb' }}>
+                  {['Name','Week','Date','Type','Attendance'].map(h => (
+                    <th key={h} style={{ padding: '7px 10px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {(rawData?.events || []).map((e, i) => (
+                  <tr key={i} style={{ background: i % 2 === 0 ? 'white' : '#fafafa' }}>
+                    <td style={{ padding: '6px 10px', fontWeight: 600, color: '#16213e' }}>{e.name}</td>
+                    <td style={{ padding: '6px 10px', color: '#6b7280' }}>{e.week}</td>
+                    <td style={{ padding: '6px 10px', color: '#6b7280' }}>{e.date}</td>
+                    <td style={{ padding: '6px 10px', color: '#6b7280' }}>{e.type}</td>
+                    <td style={{ padding: '6px 10px', color: COLORS.event, fontWeight: 700 }}>{e.attendance?.toLocaleString() || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>)}
 
         {/* GOODREADS */}
