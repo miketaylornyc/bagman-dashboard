@@ -93,7 +93,7 @@ function StatCard({ label, value, sub, color, pct }) {
   )
 }
 
-const SOCIAL_THRESHOLD = 50000
+const SOCIAL_THRESHOLD = 20000
 
 const MarkerLabel = ({ x, y, width, index, data }) => {
   const row = data?.[index]
@@ -418,7 +418,7 @@ export default function Dashboard() {
         <span><span style={{ color: COLORS.organic, fontWeight: 700 }}>■</span> Organic</span>
         <span><span style={{ color: '#94a3b8',      fontWeight: 700 }}>■</span> Bulk</span>
         <span><span style={{ color: COLORS.event,   fontWeight: 700 }}>★</span> Event</span>
-        <span><span style={{ color: '#e1306c',      fontWeight: 700 }}>●</span> Social 50K+ views</span>
+        <span><span style={{ color: '#e1306c',      fontWeight: 700 }}>●</span> Social 20K+ views</span>
         <span style={{ background: '#c9a84c22', color: '#c9a84c', border: '1px solid #c9a84c66', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T1 Gold ×3</span>
         <span style={{ background: '#9ca3af22', color: '#9ca3af', border: '1px solid #9ca3af66', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T2 Silver ×2</span>
         <span style={{ background: '#b4530922', color: '#b45309', border: '1px solid #b4530966', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T3 Bronze ×1</span>
@@ -443,7 +443,7 @@ export default function Dashboard() {
         {/* COMBINED */}
         {activeTab === 'combined' && (<>
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan + Events + Press</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>★ = event · ◆ = press tier · ● = social 50K+ views · GR adds on right axis. Hover for detail.</p>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>★ = event · ◆ = press tier · ● = social 20K+ views · GR adds on right axis. Hover for detail.</p>
           <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, padding: '6px 12px', marginBottom: 12, fontSize: 11, color: '#166534', display: 'flex', gap: 8 }}>
             <span>📗</span>
             <span>GR right axis capped at 100 for readability. Publisher paid promotions (Sep 17–24 and Nov 21–Dec 1) drove spikes well above this — see the Goodreads tab for the full picture.</span>
