@@ -78,7 +78,7 @@ export default function App() {
         <div style={{ marginTop: 28, paddingTop: 18, borderTop: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
           <img src="/mt_medium.jpg" alt="Mike Taylor" style={{ width: 36, height: 36, borderRadius: 8 }} />
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#374151' }}>Prepared by Mike Taylor LLC</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#374151' }}>Powered by Mike Taylor LLC</div>
             <div style={{ fontSize: 10, color: '#9ca3af' }}>miketaylor.nyc</div>
           </div>
         </div>
