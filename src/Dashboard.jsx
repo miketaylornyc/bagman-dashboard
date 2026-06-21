@@ -643,31 +643,9 @@ export default function Dashboard() {
 
         {/* SOCIAL */}
         {activeTab === 'social' && (() => {
-          const igPosts = allSocial.filter(p => p.platform === 'Instagram')
-          const liPosts = allSocial.filter(p => p.platform === 'LinkedIn')
-          const igViews = igPosts.reduce((s,p) => s+p.views, 0)
-          const liViews = liPosts.reduce((s,p) => s+p.views, 0)
-          const top10   = [...allSocial].sort((a,b) => b.views - a.views).slice(0,10)
+          const top10 = [...allSocial].sort((a,b) => b.views - a.views).slice(0,10)
           return (<>
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Social Media Performance</h2>
-            <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 14 }}>
-              {allSocial.length} posts · Collab posts averaged {collabAvg.toLocaleString()} views vs. {noCollabAvg.toLocaleString()} own posts — {collabAvg && noCollabAvg ? (Math.round(collabAvg/noCollabAvg * 10)/10) : '—'}× lift.
-            </p>
-            <div style={{ display: 'flex', gap: 10, marginBottom: 18, flexWrap: 'wrap' }}>
-              {[
-                { label: 'Total Views',   value: totalSocialViews.toLocaleString(), color: '#16213e', sub: 'All platforms' },
-                { label: 'Instagram',     value: igViews.toLocaleString(),           color: '#e1306c', sub: `${igPosts.length} posts` },
-                { label: 'LinkedIn',      value: liViews.toLocaleString(),           color: '#0077b5', sub: `${liPosts.length} posts` },
-                { label: 'Collab Avg',    value: collabAvg.toLocaleString(),         color: '#7c3aed', sub: `${collabPosts.length} collab posts` },
-                { label: 'Own Post Avg',  value: noCollabAvg.toLocaleString(),       color: '#6b7280', sub: `${noCollabPosts.length} own posts` },
-              ].map(c => (
-                <div key={c.label} style={{ background: c.color + '10', border: `1px solid ${c.color}33`, borderRadius: 10, padding: '8px 14px', flex: '1 1 100px' }}>
-                  <div style={{ fontSize: 16, fontWeight: 800, color: c.color }}>{c.value}</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: '#374151' }}>{c.label}</div>
-                  <div style={{ fontSize: 10, color: '#9ca3af' }}>{c.sub}</div>
-                </div>
-              ))}
-            </div>
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 16px' }}>Notable Social Posts</h2>
             <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 8 }}>Weekly Social Views vs. Organic Sales</div>
             <ResponsiveContainer width="100%" height={240}>
               <ComposedChart data={weekSocial} margin={{ top: 8, right: 40, left: 0, bottom: 0 }}>
