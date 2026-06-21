@@ -110,6 +110,7 @@ export async function fetchAllData() {
       date:       r['Date'],
       type:       r['Type'],
       attendance: r['Attendance'] ? num(r['Attendance']) : null,
+      zip:        r['Zip'] || '',
     }))
 
     // ── BULK ORDERS ───────────────────────────────────────────────────────────
