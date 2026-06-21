@@ -57,9 +57,9 @@ export default function EventMap({ events }) {
 
       // Bounds: Toronto (top) to southern NJ (bottom)
       const map = L.map(mapRef.current, {
-        center: [41.8, -74.5],
-        zoom: 7,
-        maxBounds: [[43.9, -80], [40.4, -72]],
+        center: [42.5, -76.0],
+        zoom: 6,
+        maxBounds: [[44.5, -81], [40.2, -71]],
         maxBoundsViscosity: 0.8,
       })
 
