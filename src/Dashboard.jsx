@@ -318,7 +318,7 @@ export default function Dashboard() {
       {/* Stat Cards */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
         <StatCard label="Total Copies Sold" value={totalCopiesSold.toLocaleString()} sub="Bookscan + Coach + Rotman 🇨🇦" color={COLORS.organicGreen} />
-        <StatCard label="Bookscan"          value={totalSales.toLocaleString()}       sub="US Circana retail only"         color={COLORS.organic}      />
+        <StatCard label="Bookscan"          value={totalSales.toLocaleString()}       sub="US Circana retail only (85%+ of all US book sales)"  color={COLORS.organic}      />
         <StatCard label="Organic Sales"     value={totalOrganic.toLocaleString()}     pct={`${organicPct}% of Bookscan`}  sub="Reader-driven retail"   color="#4b6a8a"            />
         <StatCard label="Bulk / Placement"  value={totalBulk.toLocaleString()}        pct={`${bulkPct}% of Bookscan`}     sub="Corporate & event / B&N" color="#94a3b8"           />
         <StatCard label="Press Hits"        value={totalPress}                        pct={`${totalPressWt} weighted pts`} sub="Across all media types"  color={COLORS.t1}         />
@@ -425,7 +425,7 @@ export default function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, 100]} />
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, 100]} allowDataOverflow />
               <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
