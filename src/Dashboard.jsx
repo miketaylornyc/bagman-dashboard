@@ -196,6 +196,7 @@ const CustomTooltip = ({ active, payload, label, data, bulk }) => {
           ))}
         </div>
       )}
+      {weekBulk.length > 0 && (
         <div style={{ marginTop: 8, borderTop: '1px solid #f0f0f0', paddingTop: 8 }}>
           <div style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', marginBottom: 4 }}>BULK ORDERS</div>
           {weekBulk.map((o, i) => (
