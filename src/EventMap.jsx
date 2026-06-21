@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-// Static zip → [lat, lng] lookup
 const ZIP_COORDS = {
   '10022': [40.7614, -73.9776],
   '10128': [40.7739, -73.9509],
@@ -29,19 +28,17 @@ const TYPE_COLOR = {
   'Gala':            '#c9a84c',
 }
 
-function addMarkers(L, map, events, markersRef) {
-  // Clear existing markers
+// Keep a ref to events outside React so the Leaflet callback can always access latest
+let _eventsCache = []
+
+function renderMarkers(L, map, markersRef) {
   markersRef.current.forEach(m => m.remove())
   markersRef.current = []
 
-  const mappable = events.filter(e => {
-    const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
-    return zip && ZIP_COORDS[zip]
-  })
-
   const byZip = {}
-  mappable.forEach(e => {
+  _eventsCache.forEach(e => {
     const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
+    if (!zip || !ZIP_COORDS[zip]) return
     if (!byZip[zip]) byZip[zip] = []
     byZip[zip].push(e)
   })
@@ -67,12 +64,7 @@ function addMarkers(L, map, events, markersRef) {
       </div>`
     ).join('<hr style="margin:4px 0;border-color:#e5e7eb"/>')
 
-    circle.bindTooltip(tooltipHtml, {
-      permanent: false,
-      direction: 'top',
-      className: 'event-map-tooltip',
-    })
-
+    circle.bindTooltip(tooltipHtml, { permanent: false, direction: 'top' })
     markersRef.current.push(circle)
   })
 }
@@ -82,28 +74,21 @@ export default function EventMap({ events }) {
   const leafletRef = useRef(null)
   const markersRef = useRef([])
 
-  // Initialize map once
+  // Always keep the module-level cache in sync
+  _eventsCache = events
+
   useEffect(() => {
+    // Load Leaflet CSS
     if (!document.getElementById('leaflet-css')) {
       const link = document.createElement('link')
-      link.id   = 'leaflet-css'
-      link.rel  = 'stylesheet'
+      link.id = 'leaflet-css'
+      link.rel = 'stylesheet'
       link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
       document.head.appendChild(link)
     }
 
-    if (window.L) {
-      initMap(window.L)
-      return
-    }
-
-    const script = document.createElement('script')
-    script.id  = 'leaflet-js'
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
-    script.onload = () => initMap(window.L)
-    document.head.appendChild(script)
-
-    function initMap(L) {
+    function initMap() {
+      const L = window.L
       if (!mapRef.current || leafletRef.current) return
 
       const map = L.map(mapRef.current, {
@@ -118,7 +103,6 @@ export default function EventMap({ events }) {
         maxZoom: 16,
       }).addTo(map)
 
-      // Legend
       const legend = L.control({ position: 'bottomright' })
       legend.onAdd = () => {
         const div = L.DomUtil.create('div')
@@ -135,11 +119,20 @@ export default function EventMap({ events }) {
       legend.addTo(map)
 
       leafletRef.current = map
+      renderMarkers(L, map, markersRef)
+    }
 
-      // Add markers if events already loaded
-      if (events.length > 0) {
-        addMarkers(L, map, events, markersRef)
-      }
+    if (window.L) {
+      initMap()
+    } else if (!document.getElementById('leaflet-js')) {
+      const script = document.createElement('script')
+      script.id  = 'leaflet-js'
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'
+      script.onload = initMap
+      document.head.appendChild(script)
+    } else {
+      // Script tag exists but hasn't loaded yet — wait
+      document.getElementById('leaflet-js').addEventListener('load', initMap)
     }
 
     return () => {
@@ -151,10 +144,10 @@ export default function EventMap({ events }) {
     }
   }, [])
 
-  // Re-add markers whenever events data changes (e.g. after sheet loads)
+  // Re-render markers whenever events data updates
   useEffect(() => {
     if (leafletRef.current && window.L && events.length > 0) {
-      addMarkers(window.L, leafletRef.current, events, markersRef)
+      renderMarkers(window.L, leafletRef.current, markersRef)
     }
   }, [events])
 
@@ -171,5 +164,3 @@ export default function EventMap({ events }) {
     />
   )
 }
-
-// Static zip → [lat, lng] lookup
