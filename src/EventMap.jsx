@@ -51,14 +51,13 @@ function addMarkers(L, map, events, markersRef) {
     const totalAtt = evts.reduce((s, e) => s + (e.attendance || 0), 0)
     const radius   = Math.max(8, Math.min(32, Math.sqrt(totalAtt || 20) * 2.5))
     const color    = TYPE_COLOR[evts[0].type] || '#6b7280'
-    const isCanada = zip === 'M5S1A1'
 
     const circle = L.circleMarker([lat, lng], {
       radius,
       fillColor:   color,
       fillOpacity: 0.75,
-      color:       isCanada ? '#166534' : 'white',
-      weight:      isCanada ? 3 : 1.5,
+      color:       'white',
+      weight:      1.5,
     }).addTo(map)
 
     const tooltipHtml = evts.map(e =>
@@ -129,7 +128,7 @@ export default function EventMap({ events }) {
           <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7c3aed;margin-right:6px"></span>Public / Conference</div>
           <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#16213e;margin-right:6px"></span>Private / Members</div>
           <div><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#c9a84c;margin-right:6px"></span>Gala</div>
-          <div style="margin-top:6px;color:#9ca3af">Circle size = attendance<br/>🇨🇦 Green border = Canada</div>
+          <div style="margin-top:6px;color:#9ca3af">Circle size = attendance</div>
         `
         return div
       }
