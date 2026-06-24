@@ -38,6 +38,7 @@ function renderMarkers(L, map, markersRef) {
   const byZip = {}
   _eventsCache.forEach(e => {
     const zip = (e.zip || '').replace(/\s/g, '').toUpperCase()
+    console.log('Event:', e.name, '| Raw zip:', JSON.stringify(e.zip), '| Normalized:', zip, '| Found:', !!ZIP_COORDS[zip])
     if (!zip || !ZIP_COORDS[zip]) return
     if (!byZip[zip]) byZip[zip] = []
     byZip[zip].push(e)
