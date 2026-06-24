@@ -342,7 +342,6 @@ export default function Dashboard() {
               <div style={{ color: '#6b7280', fontSize: 13 }}>by Lew Frankfort</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <img src="/mt_small.jpg" alt="Mike Taylor" style={{ width: 22, height: 22, borderRadius: 5 }} />
               <span style={{ fontSize: 11, color: '#9ca3af' }}>
                 Powered by <strong style={{ color: '#6b7280' }}>Mike Taylor LLC</strong> · <a href="https://miketaylor.nyc" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none' }}>miketaylor.nyc</a>
               </span>
