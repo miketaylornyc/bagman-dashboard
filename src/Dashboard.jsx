@@ -291,6 +291,19 @@ export default function Dashboard() {
     color: dateRange === r ? 'white' : '#6b7280',
   })
 
+  const filteredDerived = useMemo(() => {
+    if (dateRange === 'pub') return derived.filter(d => parseInt(d.week.replace('Wk ', '')) <= 8)
+    if (dateRange === '6mo') return derived.filter(d => parseInt(d.week.replace('Wk ', '')) >= 19)
+    return derived
+  }, [derived, dateRange])
+
+  const weekSocial = filteredDerived.map(d => ({
+    week: d.week,
+    collabViews: d.collabViews,
+    ownViews: d.ownViews,
+    organic: d.organic,
+  }))
+
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
       <div style={{ background: '#16213e', color: 'white', borderRadius: 8, padding: '5px 14px', fontWeight: 800, fontSize: 18, letterSpacing: 2 }}>BAG MAN</div>
@@ -306,19 +319,6 @@ export default function Dashboard() {
       <button onClick={loadData} style={{ padding: '8px 20px', borderRadius: 8, background: '#16213e', color: 'white', border: 'none', cursor: 'pointer', fontSize: 13 }}>Retry</button>
     </div>
   )
-
-  const filteredDerived = useMemo(() => {
-    if (dateRange === 'pub') return derived.filter(d => parseInt(d.week.replace('Wk ', '')) <= 8)
-    if (dateRange === '6mo') return derived.filter(d => parseInt(d.week.replace('Wk ', '')) >= 19)
-    return derived
-  }, [derived, dateRange])
-
-  const weekSocial = filteredDerived.map(d => ({
-    week: d.week,
-    collabViews: d.collabViews,
-    ownViews: d.ownViews,
-    organic: d.organic,
-  }))
 
   return (
     <div style={{ fontFamily: "'Inter','Segoe UI',sans-serif", background: '#f8f9fb', minHeight: '100vh', padding: '24px 28px' }}>
