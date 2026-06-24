@@ -817,6 +817,13 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Footer logo */}
+      <div style={{ textAlign: 'center', marginTop: 32, paddingTop: 24, borderTop: '1px solid #e5e7eb' }}>
+        <a href="https://www.miketaylor.nyc" target="_blank" rel="noopener noreferrer">
+          <img src="/mt_medium.jpg" alt="Mike Taylor" style={{ width: 56, height: 56, borderRadius: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.10)', display: 'inline-block' }} />
+        </a>
+      </div>
+
     </div>
   )
 }
