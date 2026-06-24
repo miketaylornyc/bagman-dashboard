@@ -341,6 +341,7 @@ export default function Dashboard() {
               <div style={{ background: '#16213e', color: 'white', borderRadius: 8, padding: '5px 14px', fontWeight: 800, fontSize: 18, letterSpacing: 2 }}>BAG MAN</div>
               <div style={{ color: '#6b7280', fontSize: 13 }}>by Lew Frankfort</div>
             </div>
+            <div style={{ fontSize: 11, color: '#9ca3af', marginBottom: 4 }}>Published October 14, 2025</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ fontSize: 11, color: '#9ca3af' }}>
                 Powered by <strong style={{ color: '#6b7280' }}>Mike Taylor LLC</strong> · <a href="https://miketaylor.nyc" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none' }}>miketaylor.nyc</a>
