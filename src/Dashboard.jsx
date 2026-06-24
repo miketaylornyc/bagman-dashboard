@@ -94,7 +94,7 @@ function StatCard({ label, value, sub, color, pct }) {
   )
 }
 
-const SOCIAL_THRESHOLD = 20000
+const SOCIAL_THRESHOLD = 5000
 
 const MarkerLabel = ({ x, y, width, index, data }) => {
   const row = data?.[index]
@@ -471,7 +471,7 @@ export default function Dashboard() {
           )}
           {/* Social marker — combined, sales */}
           {['combined','sales'].includes(activeTab) && (
-            <span><span style={{ color: '#e1306c', fontWeight: 700 }}>●</span> Social 20K+ views</span>
+            <span><span style={{ color: '#e1306c', fontWeight: 700 }}>●</span> Social 5K+ views</span>
           )}
           {/* Press tiers — combined, sales, press, goodreads */}
           {['combined','sales','press','goodreads'].includes(activeTab) && (<>
@@ -497,7 +497,7 @@ export default function Dashboard() {
         {/* COMBINED */}
         {activeTab === 'combined' && (<>
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan + Events + Press</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>★ = event · ◆ = press tier · ● = social 20K+ views · GR adds on right axis. Hover for detail.</p>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>★ = event · ◆ = press tier · ● = social 5K+ views · GR adds on right axis. Hover for detail.</p>
           <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, padding: '6px 12px', marginBottom: 12, fontSize: 11, color: '#166534', display: 'flex', gap: 8 }}>
             <span>📗</span>
             <span>GR right axis capped at 100 for readability. Publisher paid promotions (Sep 17–24 and Nov 21–Dec 1) drove spikes well above this — see the Goodreads tab for the full picture.</span>
