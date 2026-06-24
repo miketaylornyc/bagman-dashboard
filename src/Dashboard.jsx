@@ -897,16 +897,15 @@ export default function Dashboard() {
               <ComposedChart data={audienceData} margin={{ top: 10, right: 40, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
-                <YAxis yAxisId="ig" tick={{ fontSize: 10 }} />
-                <YAxis yAxisId="li" orientation="right" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
                 <Tooltip formatter={(val, name) => [val.toLocaleString(), name]} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 {collabMonths.map(m => (
-                  <ReferenceLine key={m} yAxisId="ig" x={m}
+                  <ReferenceLine key={m} x={m}
                     stroke="#e1306c" strokeOpacity={0.15} strokeWidth={20} />
                 ))}
-                <Line yAxisId="ig" type="monotone" dataKey="ig" name="Instagram" stroke="#e1306c" strokeWidth={2.5} dot={{ r: 4, fill: '#e1306c' }} />
-                <Line yAxisId="li" type="monotone" dataKey="li" name="LinkedIn"  stroke="#0077b5" strokeWidth={2.5} dot={{ r: 4, fill: '#0077b5' }} />
+                <Line type="monotone" dataKey="ig" name="Instagram" stroke="#e1306c" strokeWidth={2.5} dot={{ r: 4, fill: '#e1306c' }} />
+                <Line type="monotone" dataKey="li" name="LinkedIn"  stroke="#0077b5" strokeWidth={2.5} dot={{ r: 4, fill: '#0077b5' }} />
               </ComposedChart>
             </ResponsiveContainer>
 
