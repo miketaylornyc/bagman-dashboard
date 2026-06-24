@@ -224,6 +224,7 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('combined')
   const [pressView, setPressView] = useState('weighted')
   const [dateRange, setDateRange] = useState('all')
+  const [showDetail, setShowDetail] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
 
   const loadData = async () => {
@@ -827,39 +828,49 @@ export default function Dashboard() {
 
       {/* Weekly Detail Table */}
       <div style={{ background: 'white', borderRadius: 16, padding: '20px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}>
-        <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 14px' }}>Weekly Detail</h2>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
-            <thead>
-              <tr style={{ background: '#f8f9fb' }}>
-                {['Week','Dates','Bookscan','Bulk','Organic','Press Hits','Press Pts','Events','Attendance','GR Added','Want to Read','Ratings','Reviews'].map(h => (
-                  <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb', whiteSpace: 'nowrap' }}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {derived.map((row, i) => (
-                <tr key={row.week} style={{ background: row.grPromo ? '#f0fdf4' : row.pending ? '#fafafa' : i % 2 === 0 ? 'white' : '#fafafa' }}>
-                  <td style={{ padding: '6px 10px', fontWeight: 600, color: '#16213e' }}>
-                    {row.week}{row.grPromo ? ' 📗' : ''}{row.pending ? ' ⏳' : ''}
-                  </td>
-                  <td style={{ padding: '6px 10px', color: '#6b7280', whiteSpace: 'nowrap' }}>{row.label}</td>
-                  <td style={{ padding: '6px 10px', fontWeight: 600 }}>{row.pending ? '—' : row.sales.toLocaleString()}</td>
-                  <td style={{ padding: '6px 10px', color: '#94a3b8' }}>{row.bulk > 0 ? row.bulk.toLocaleString() : '—'}</td>
-                  <td style={{ padding: '6px 10px', color: COLORS.organicGreen, fontWeight: 700 }}>{row.pending ? '—' : row.organic.toLocaleString()}</td>
-                  <td style={{ padding: '6px 10px', color: row.domColor, fontWeight: 700 }}>{row.pressRaw > 0 ? `◆ ${row.pressRaw}` : '—'}</td>
-                  <td style={{ padding: '6px 10px', color: row.domColor, fontWeight: 700 }}>{row.pressWt > 0 ? `${row.pressWt}pt` : '—'}</td>
-                  <td style={{ padding: '6px 10px', color: COLORS.event, fontWeight: 700 }}>{row.eventCount > 0 ? `★ ${row.eventCount}` : '—'}</td>
-                  <td style={{ padding: '6px 10px', color: COLORS.event }}>{row.totalAttendance > 0 ? row.totalAttendance.toLocaleString() : '—'}</td>
-                  <td style={{ padding: '6px 10px', color: COLORS.grAdded,   fontWeight: 600 }}>{row.grAdded || '—'}</td>
-                  <td style={{ padding: '6px 10px', color: COLORS.grToRead,  fontWeight: 600 }}>{row.grToRead || '—'}</td>
-                  <td style={{ padding: '6px 10px', color: COLORS.grRatings, fontWeight: 600 }}>{row.grRatings || '—'}</td>
-                  <td style={{ padding: '6px 10px', color: '#6366f1',        fontWeight: 600 }}>{row.grReviews || '—'}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div
+          onClick={() => setShowDetail(v => !v)}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', userSelect: 'none' }}
+        >
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: 0 }}>Weekly Detail</h2>
+          <span style={{ fontSize: 12, color: '#9ca3af', fontWeight: 600 }}>
+            {showDetail ? '▲ Collapse' : '▼ Expand'}
+          </span>
         </div>
+        {showDetail && (
+          <div style={{ overflowX: 'auto', marginTop: 14 }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+              <thead>
+                <tr style={{ background: '#f8f9fb' }}>
+                  {['Week','Dates','Bookscan','Bulk','Organic','Press Hits','Press Pts','Events','Attendance','GR Added','Want to Read','Ratings','Reviews'].map(h => (
+                    <th key={h} style={{ padding: '8px 10px', textAlign: 'left', fontWeight: 700, color: '#374151', borderBottom: '2px solid #e5e7eb', whiteSpace: 'nowrap' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {derived.map((row, i) => (
+                  <tr key={row.week} style={{ background: row.grPromo ? '#f0fdf4' : row.pending ? '#fafafa' : i % 2 === 0 ? 'white' : '#fafafa' }}>
+                    <td style={{ padding: '6px 10px', fontWeight: 600, color: '#16213e' }}>
+                      {row.week}{row.grPromo ? ' 📗' : ''}{row.pending ? ' ⏳' : ''}
+                    </td>
+                    <td style={{ padding: '6px 10px', color: '#6b7280', whiteSpace: 'nowrap' }}>{row.label}</td>
+                    <td style={{ padding: '6px 10px', fontWeight: 600 }}>{row.pending ? '—' : row.sales.toLocaleString()}</td>
+                    <td style={{ padding: '6px 10px', color: '#94a3b8' }}>{row.bulk > 0 ? row.bulk.toLocaleString() : '—'}</td>
+                    <td style={{ padding: '6px 10px', color: COLORS.organicGreen, fontWeight: 700 }}>{row.pending ? '—' : row.organic.toLocaleString()}</td>
+                    <td style={{ padding: '6px 10px', color: row.domColor, fontWeight: 700 }}>{row.pressRaw > 0 ? `◆ ${row.pressRaw}` : '—'}</td>
+                    <td style={{ padding: '6px 10px', color: row.domColor, fontWeight: 700 }}>{row.pressWt > 0 ? `${row.pressWt}pt` : '—'}</td>
+                    <td style={{ padding: '6px 10px', color: COLORS.event, fontWeight: 700 }}>{row.eventCount > 0 ? `★ ${row.eventCount}` : '—'}</td>
+                    <td style={{ padding: '6px 10px', color: COLORS.event }}>{row.totalAttendance > 0 ? row.totalAttendance.toLocaleString() : '—'}</td>
+                    <td style={{ padding: '6px 10px', color: COLORS.grAdded,   fontWeight: 600 }}>{row.grAdded || '—'}</td>
+                    <td style={{ padding: '6px 10px', color: COLORS.grToRead,  fontWeight: 600 }}>{row.grToRead || '—'}</td>
+                    <td style={{ padding: '6px 10px', color: COLORS.grRatings, fontWeight: 600 }}>{row.grRatings || '—'}</td>
+                    <td style={{ padding: '6px 10px', color: '#6366f1',        fontWeight: 600 }}>{row.grReviews || '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {/* Footer logo */}
