@@ -775,55 +775,63 @@ export default function Dashboard() {
 
           {/* Word Cloud from reader reviews */}
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Reader Sentiment — Word Cloud</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Key words from Goodreads & Amazon reviews. Size = frequency. Sourced from 5 written reviews.</p>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Key words from Goodreads & Amazon reviews. Size = frequency. Based on 25 written reviews.</p>
           <div style={{
-            background: '#f8f9fb', borderRadius: 12, padding: '24px 20px',
-            border: '1px solid #e5e7eb', lineHeight: 2, textAlign: 'center'
+            background: '#f8f9fb', borderRadius: 12, padding: '28px 24px',
+            border: '1px solid #e5e7eb', lineHeight: 2.4, textAlign: 'center'
           }}>
             {[
-              { word: 'leadership', size: 28, color: '#16213e' },
-              { word: 'inspiring', size: 26, color: '#7c3aed' },
-              { word: 'Coach', size: 26, color: '#c9a84c' },
-              { word: 'brand', size: 24, color: '#16213e' },
-              { word: 'magic + logic', size: 24, color: '#e07b39' },
-              { word: 'quality', size: 22, color: '#4a9b8f' },
-              { word: 'page-turner', size: 22, color: '#7c3aed' },
-              { word: 'craftsmanship', size: 20, color: '#16213e' },
-              { word: 'wisdom', size: 20, color: '#c9a84c' },
-              { word: 'journey', size: 20, color: '#6366f1' },
-              { word: 'luxury', size: 18, color: '#4a9b8f' },
-              { word: 'humility', size: 18, color: '#e07b39' },
-              { word: 'authenticity', size: 18, color: '#7c3aed' },
-              { word: 'courage', size: 18, color: '#16213e' },
-              { word: 'great', size: 18, color: '#c9a84c' },
-              { word: 'narrative', size: 16, color: '#6b7280' },
-              { word: 'life lessons', size: 16, color: '#4a9b8f' },
-              { word: 'prestige', size: 16, color: '#16213e' },
-              { word: 'passion', size: 16, color: '#e1306c' },
-              { word: 'self-doubt', size: 16, color: '#6366f1' },
-              { word: 'success', size: 15, color: '#c9a84c' },
-              { word: 'honest', size: 15, color: '#16213e' },
-              { word: 'relatable', size: 15, color: '#7c3aed' },
-              { word: 'lasting', size: 14, color: '#4a9b8f' },
-              { word: 'candor', size: 14, color: '#6b7280' },
-              { word: 'engaged', size: 14, color: '#e07b39' },
-              { word: 'extraordinary', size: 14, color: '#16213e' },
-              { word: 'values', size: 13, color: '#c9a84c' },
-              { word: 'resilience', size: 13, color: '#7c3aed' },
-              { word: 'satisfying', size: 13, color: '#4a9b8f' },
+              { word: 'leadership', size: 32, color: '#16213e' },
+              { word: 'brand', size: 32, color: '#c9a84c' },
+              { word: 'journey', size: 28, color: '#7c3aed' },
+              { word: 'lessons', size: 26, color: '#4a9b8f' },
+              { word: 'inspiring', size: 26, color: '#e07b39' },
+              { word: 'legacy', size: 24, color: '#16213e' },
+              { word: 'love', size: 24, color: '#e1306c' },
+              { word: 'family', size: 24, color: '#c9a84c' },
+              { word: 'honest', size: 22, color: '#4a9b8f' },
+              { word: 'real', size: 22, color: '#16213e' },
+              { word: 'wisdom', size: 22, color: '#c9a84c' },
+              { word: 'success', size: 22, color: '#7c3aed' },
+              { word: 'integrity', size: 20, color: '#16213e' },
+              { word: 'heart', size: 20, color: '#e1306c' },
+              { word: 'curiosity', size: 20, color: '#4a9b8f' },
+              { word: 'memoir', size: 20, color: '#6b7280' },
+              { word: 'personal', size: 18, color: '#7c3aed' },
+              { word: 'mental health', size: 18, color: '#4a9b8f' },
+              { word: 'amazing', size: 18, color: '#e07b39' },
+              { word: 'valuable', size: 18, color: '#16213e' },
+              { word: 'magic + logic', size: 18, color: '#c9a84c' },
+              { word: 'vulnerability', size: 16, color: '#7c3aed' },
+              { word: 'global', size: 16, color: '#16213e' },
+              { word: 'authenticity', size: 16, color: '#4a9b8f' },
+              { word: 'humility', size: 16, color: '#e07b39' },
+              { word: 'perseverance', size: 16, color: '#16213e' },
+              { word: 'exceptional', size: 16, color: '#c9a84c' },
+              { word: 'page-turner', size: 16, color: '#7c3aed' },
+              { word: 'Bronx', size: 14, color: '#6b7280' },
+              { word: 'resilience', size: 14, color: '#4a9b8f' },
+              { word: 'craftsmanship', size: 14, color: '#16213e' },
+              { word: 'recommend', size: 14, color: '#e07b39' },
+              { word: 'accessible luxury', size: 14, color: '#c9a84c' },
+              { word: 'purpose', size: 14, color: '#7c3aed' },
+              { word: 'courage', size: 13, color: '#16213e' },
+              { word: 'generosity', size: 13, color: '#e1306c' },
+              { word: 'blueprint', size: 13, color: '#4a9b8f' },
+              { word: 'must-read', size: 13, color: '#c9a84c' },
             ].sort(() => Math.random() - 0.5).map(({ word, size, color }) => (
               <span key={word} style={{
-                fontSize: size, color, fontWeight: size >= 22 ? 700 : size >= 18 ? 600 : 400,
-                margin: '0 10px', display: 'inline-block', transition: 'opacity 0.2s',
-                cursor: 'default',
+                fontSize: size, color, fontWeight: size >= 26 ? 800 : size >= 20 ? 700 : size >= 16 ? 600 : 400,
+                margin: `0 ${Math.floor(size * 0.4)}px`, display: 'inline-block',
+                cursor: 'default', transition: 'opacity 0.2s',
               }}
-                onMouseEnter={e => e.target.style.opacity = '0.6'}
+                onMouseEnter={e => e.target.style.opacity = '0.5'}
                 onMouseLeave={e => e.target.style.opacity = '1'}
               >{word}</span>
             ))}
           </div>
           <p style={{ fontSize: 10, color: '#c4c9d4', textAlign: 'center', marginTop: 8 }}>
-            Based on 5 written reviews pasted manually · Add more reviews to expand the word cloud
+            Based on 25 written reviews from Goodreads & Amazon · Paste more reviews to expand
           </p>
         </>)}
 
