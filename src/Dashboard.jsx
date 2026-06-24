@@ -772,6 +772,59 @@ export default function Dashboard() {
               <Line type="monotone" dataKey="cReviews" name="Total Reviews"  stroke="#6366f1"          strokeWidth={2}   dot={false} />
             </ComposedChart>
           </ResponsiveContainer>
+
+          {/* Word Cloud from reader reviews */}
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Reader Sentiment — Word Cloud</h2>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Key words from Goodreads & Amazon reviews. Size = frequency. Sourced from 5 written reviews.</p>
+          <div style={{
+            background: '#f8f9fb', borderRadius: 12, padding: '24px 20px',
+            border: '1px solid #e5e7eb', lineHeight: 2, textAlign: 'center'
+          }}>
+            {[
+              { word: 'leadership', size: 28, color: '#16213e' },
+              { word: 'inspiring', size: 26, color: '#7c3aed' },
+              { word: 'Coach', size: 26, color: '#c9a84c' },
+              { word: 'brand', size: 24, color: '#16213e' },
+              { word: 'magic + logic', size: 24, color: '#e07b39' },
+              { word: 'quality', size: 22, color: '#4a9b8f' },
+              { word: 'page-turner', size: 22, color: '#7c3aed' },
+              { word: 'craftsmanship', size: 20, color: '#16213e' },
+              { word: 'wisdom', size: 20, color: '#c9a84c' },
+              { word: 'journey', size: 20, color: '#6366f1' },
+              { word: 'luxury', size: 18, color: '#4a9b8f' },
+              { word: 'humility', size: 18, color: '#e07b39' },
+              { word: 'authenticity', size: 18, color: '#7c3aed' },
+              { word: 'courage', size: 18, color: '#16213e' },
+              { word: 'great', size: 18, color: '#c9a84c' },
+              { word: 'narrative', size: 16, color: '#6b7280' },
+              { word: 'life lessons', size: 16, color: '#4a9b8f' },
+              { word: 'prestige', size: 16, color: '#16213e' },
+              { word: 'passion', size: 16, color: '#e1306c' },
+              { word: 'self-doubt', size: 16, color: '#6366f1' },
+              { word: 'success', size: 15, color: '#c9a84c' },
+              { word: 'honest', size: 15, color: '#16213e' },
+              { word: 'relatable', size: 15, color: '#7c3aed' },
+              { word: 'lasting', size: 14, color: '#4a9b8f' },
+              { word: 'candor', size: 14, color: '#6b7280' },
+              { word: 'engaged', size: 14, color: '#e07b39' },
+              { word: 'extraordinary', size: 14, color: '#16213e' },
+              { word: 'values', size: 13, color: '#c9a84c' },
+              { word: 'resilience', size: 13, color: '#7c3aed' },
+              { word: 'satisfying', size: 13, color: '#4a9b8f' },
+            ].sort(() => Math.random() - 0.5).map(({ word, size, color }) => (
+              <span key={word} style={{
+                fontSize: size, color, fontWeight: size >= 22 ? 700 : size >= 18 ? 600 : 400,
+                margin: '0 10px', display: 'inline-block', transition: 'opacity 0.2s',
+                cursor: 'default',
+              }}
+                onMouseEnter={e => e.target.style.opacity = '0.6'}
+                onMouseLeave={e => e.target.style.opacity = '1'}
+              >{word}</span>
+            ))}
+          </div>
+          <p style={{ fontSize: 10, color: '#c4c9d4', textAlign: 'center', marginTop: 8 }}>
+            Based on 5 written reviews pasted manually · Add more reviews to expand the word cloud
+          </p>
         </>)}
 
         {/* SOCIAL */}
