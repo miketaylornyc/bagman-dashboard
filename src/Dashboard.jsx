@@ -344,10 +344,19 @@ export default function Dashboard() {
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-          <button onClick={loadData} style={{
-            padding: '6px 14px', borderRadius: 8, background: 'white', border: '1px solid #e5e7eb',
-            fontSize: 11, fontWeight: 600, color: '#374151', cursor: 'pointer'
-          }}>↻ Refresh</button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <img src="/mt_small.jpg" alt="Mike Taylor" style={{ width: 28, height: 28, borderRadius: 6 }} />
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: '#374151' }}>Powered by Mike Taylor LLC</div>
+                <a href="https://miketaylor.nyc" target="_blank" rel="noopener noreferrer" style={{ fontSize: 10, color: '#9ca3af', textDecoration: 'none' }}>miketaylor.nyc</a>
+              </div>
+            </div>
+            <button onClick={loadData} style={{
+              padding: '6px 14px', borderRadius: 8, background: 'white', border: '1px solid #e5e7eb',
+              fontSize: 11, fontWeight: 600, color: '#374151', cursor: 'pointer'
+            }}>↻ Refresh</button>
+          </div>
           {lastUpdated && (
             <div style={{ fontSize: 10, color: '#9ca3af' }}>
               Updated {lastUpdated.toLocaleTimeString()}
@@ -801,12 +810,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginTop: 20, paddingTop: 16, borderTop: '1px solid #e5e7eb' }}>
-        <img src="/mt_small.jpg" alt="Mike Taylor" style={{ width: 28, height: 28, borderRadius: 6 }} />
-        <div style={{ fontSize: 11, color: '#9ca3af' }}>
-          Powered by <strong style={{ color: '#6b7280' }}>Mike Taylor LLC</strong> · <a href="https://miketaylor.nyc" target="_blank" rel="noopener noreferrer" style={{ color: '#9ca3af', textDecoration: 'none' }}>miketaylor.nyc</a> · Internal use only
-        </div>
-      </div>
     </div>
   )
 }
