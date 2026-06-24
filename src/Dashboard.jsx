@@ -744,25 +744,32 @@ export default function Dashboard() {
             </ComposedChart>
           </ResponsiveContainer>
 
-          {/* Cumulative Reviews chart */}
-          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Cumulative GR Reviews Over Time</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Running total of written Goodreads reviews. Each review represents a reader engaged enough to write about the book.</p>
-          <ResponsiveContainer width="100%" height={200}>
+          {/* Cumulative chart — all four metrics */}
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Cumulative Goodreads Engagement</h2>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Running totals for all four metrics — shows the full growth story since launch.</p>
+          <ResponsiveContainer width="100%" height={280}>
             <ComposedChart
               data={(() => {
-                let cumulative = 0
+                let cAdded = 0, cToRead = 0, cRatings = 0, cReviews = 0
                 return derived.map(d => {
-                  cumulative += (d.grReviews || 0)
-                  return { week: d.week, cumulativeReviews: cumulative }
+                  cAdded   += (d.grAdded   || 0)
+                  cToRead  += (d.grToRead  || 0)
+                  cRatings += (d.grRatings || 0)
+                  cReviews += (d.grReviews || 0)
+                  return { week: d.week, cAdded, cToRead, cRatings, cReviews }
                 })
               })()}
               margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
-              <Tooltip formatter={(val) => [val, 'Cumulative Reviews']} />
-              <Line type="monotone" dataKey="cumulativeReviews" name="Cumulative Reviews" stroke="#6366f1" strokeWidth={3} dot={{ r: 3, fill: '#6366f1' }} />
+              <YAxis tick={{ fontSize: 10 }} />
+              <Tooltip formatter={(val, name) => [val.toLocaleString(), name]} />
+              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Line type="monotone" dataKey="cAdded"   name="Total Added"    stroke={COLORS.grAdded}   strokeWidth={2.5} dot={false} />
+              <Line type="monotone" dataKey="cToRead"  name="Want to Read"   stroke={COLORS.grToRead}  strokeWidth={2}   dot={false} />
+              <Line type="monotone" dataKey="cRatings" name="Total Ratings"  stroke={COLORS.grRatings} strokeWidth={2}   dot={false} />
+              <Line type="monotone" dataKey="cReviews" name="Total Reviews"  stroke="#6366f1"          strokeWidth={2}   dot={false} />
             </ComposedChart>
           </ResponsiveContainer>
         </>)}
