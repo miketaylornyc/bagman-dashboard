@@ -442,31 +442,14 @@ export default function Dashboard() {
         <span><strong>Sales outside Bookscan:</strong> COACH purchased 2,000 copies direct from the publisher 📦 · Rotman/U of Toronto event sold ~200 copies in Canada 🇨🇦 · Neither is captured in US Bookscan/retail figures above.</span>
       </div>
 
-      {/* Legend */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12, fontSize: 11, color: '#6b7280', flexWrap: 'wrap' }}>
-        <span><span style={{ color: COLORS.organic, fontWeight: 700 }}>■</span> Organic</span>
-        <span><span style={{ color: '#94a3b8',      fontWeight: 700 }}>■</span> Bulk</span>
-        <span><span style={{ color: COLORS.event,   fontWeight: 700 }}>★</span> Event</span>
-        <span><span style={{ color: '#e1306c',      fontWeight: 700 }}>●</span> Social 20K+ views</span>
-        <span style={{ background: '#c9a84c22', color: '#c9a84c', border: '1px solid #c9a84c66', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T1 Gold ×3</span>
-        <span style={{ background: '#9ca3af22', color: '#9ca3af', border: '1px solid #9ca3af66', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T2 Silver ×2</span>
-        <span style={{ background: '#b4530922', color: '#b45309', border: '1px solid #b4530966', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T3 Bronze ×1</span>
-        <span style={{ background: '#f0fdf4', color: '#166534', border: '1px solid #86efac', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>📗 GR Promo</span>
-      </div>
-
-      {/* Methodology */}
-      <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10, padding: '9px 14px', marginBottom: 16, fontSize: 11, color: '#92400e' }}>
-        ⚑ <strong>Methodology:</strong> Pre-pub bulk orders assigned to Wk 1. Bulk week assignments ±1 week. Events shown week they occurred; sales impact may appear following week. Press: T1=3pts · T2=2pts · T3=1pt. GR spikes in Wks 6–8 partly reflect publisher paid GR promotion (Nov 21–Dec 1). Pending weeks show events/GR only until Bookscan data arrives.
-      </div>
-
       {/* Tabs */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {[['combined','Combined View'],['sales','Bookscan Sales'],['press','Press'],['events','Events'],['goodreads','Goodreads'],['social','Social Media'],['bulk','Bulk Orders']].map(([id, label]) => (
             <button key={id} style={tabStyle(id)} onClick={() => setActiveTab(id)}>{label}</button>
           ))}
         </div>
-        {/* Date range toggles — only show for chart tabs */}
+        {/* Date range toggles */}
         {['combined','sales','press','events','goodreads','social'].includes(activeTab) && (
           <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             <span style={{ fontSize: 11, color: '#9ca3af', marginRight: 2 }}>View:</span>
@@ -476,6 +459,40 @@ export default function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Contextual Legend */}
+      {['combined','sales','press','events','goodreads','social'].includes(activeTab) && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12, fontSize: 11, color: '#6b7280', flexWrap: 'wrap' }}>
+          {/* Sales bars — combined, sales, press, events */}
+          {['combined','sales','press','events'].includes(activeTab) && (<>
+            <span><span style={{ color: COLORS.organic, fontWeight: 700 }}>■</span> Organic</span>
+            <span><span style={{ color: '#94a3b8', fontWeight: 700 }}>■</span> Bulk</span>
+          </>)}
+          {/* Event marker — combined, sales, events */}
+          {['combined','sales','events'].includes(activeTab) && (
+            <span><span style={{ color: COLORS.event, fontWeight: 700 }}>★</span> Event</span>
+          )}
+          {/* Social marker — combined, sales */}
+          {['combined','sales'].includes(activeTab) && (
+            <span><span style={{ color: '#e1306c', fontWeight: 700 }}>●</span> Social 20K+ views</span>
+          )}
+          {/* Press tiers — combined, sales, press, goodreads */}
+          {['combined','sales','press','goodreads'].includes(activeTab) && (<>
+            <span style={{ background: '#c9a84c22', color: '#c9a84c', border: '1px solid #c9a84c66', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T1 Gold ×3</span>
+            <span style={{ background: '#9ca3af22', color: '#9ca3af', border: '1px solid #9ca3af66', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T2 Silver ×2</span>
+            <span style={{ background: '#b4530922', color: '#b45309', border: '1px solid #b4530966', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>◆ T3 Bronze ×1</span>
+          </>)}
+          {/* GR Promo — combined, goodreads */}
+          {['combined','goodreads'].includes(activeTab) && (
+            <span style={{ background: '#f0fdf4', color: '#166534', border: '1px solid #86efac', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>📗 GR Promo</span>
+          )}
+          {/* Social collab — social */}
+          {activeTab === 'social' && (<>
+            <span><span style={{ color: '#7c3aed', fontWeight: 700 }}>■</span> Collab Views</span>
+            <span><span style={{ color: '#94a3b8', fontWeight: 700 }}>■</span> Own Post Views</span>
+          </>)}
+        </div>
+      )}
 
       {/* Chart Panel */}
       <div style={{ background: 'white', borderRadius: 16, padding: '24px 20px 20px', boxShadow: '0 2px 10px rgba(0,0,0,0.06)', marginBottom: 20 }}>
