@@ -438,16 +438,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* COACH note */}
-      <div style={{
-        background: '#f0f4ff', border: '1px solid #c7d2fe', borderRadius: 10,
-        padding: '9px 14px', marginBottom: 12, fontSize: 11, color: '#3730a3',
-        display: 'flex', alignItems: 'center', gap: 8
-      }}>
-        <span style={{ fontSize: 14 }}>📦</span>
-        <span><strong>Sales outside Bookscan:</strong> COACH purchased 2,000 copies direct from the publisher 📦 · Rotman/U of Toronto event sold ~200 copies in Canada 🇨🇦 · Neither is captured in US Bookscan/retail figures above.</span>
-      </div>
-
       {/* Tabs */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, flexWrap: 'wrap', gap: 8 }}>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -559,7 +549,15 @@ export default function Dashboard() {
                 </div>
               </div>
               <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan: Organic vs. Bulk</h2>
-              <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>★ = event · ◆ = press. Hover for detail.</p>
+              <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>★ = event · ◆ = press. Hover for detail.</p>
+              <div style={{
+                background: '#f0f4ff', border: '1px solid #c7d2fe', borderRadius: 10,
+                padding: '8px 14px', marginBottom: 12, fontSize: 11, color: '#3730a3',
+                display: 'flex', alignItems: 'center', gap: 8
+              }}>
+                <span style={{ fontSize: 13 }}>📦</span>
+                <span><strong>Sales outside Bookscan:</strong> COACH purchased 2,000 copies direct from the publisher 📦 · Rotman/U of Toronto event sold ~200 copies in Canada 🇨🇦 · Neither is captured in the figures below.</span>
+              </div>
               <ResponsiveContainer width="100%" height={280}>
                 <ComposedChart data={filteredDerived} margin={{ top: 28, right: 20, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
