@@ -369,9 +369,19 @@ export default function Dashboard() {
         <StatCard label="Organic Sales"     value={totalOrganic.toLocaleString()}     pct={`${organicPct}% of Bookscan`}  sub="Reader-driven retail"   color="#4b6a8a"            />
         <StatCard label="Bulk / Placement"  value={totalBulk.toLocaleString()}        pct={`${bulkPct}% of Bookscan`}     sub="Corporate & event / B&N" color="#94a3b8"           />
         <StatCard label="Press Hits"        value={totalPress}                        pct={`${totalPressWt} weighted pts`} sub="Across all media types"  color={COLORS.t1}         />
-        <StatCard label="Events"            value={totalEvents}                       sub={`${totalAttendance.toLocaleString()} total attendees`} color={COLORS.event} />
       </div>
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
+        {/* Events card */}
+        <div style={{
+          background: 'white', borderRadius: 14, padding: '16px 20px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.06)', flex: '1 1 160px',
+          borderTop: `4px solid ${COLORS.event}`
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', letterSpacing: 1, marginBottom: 10 }}>EVENTS</div>
+          <div style={{ fontSize: 36, fontWeight: 800, color: COLORS.event, lineHeight: 1 }}>{totalEvents}</div>
+          <div style={{ fontSize: 11, color: '#374151', fontWeight: 600, marginTop: 8 }}>{totalAttendance.toLocaleString()} total attendees</div>
+          <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 4 }}>NYC · Toronto · NJ</div>
+        </div>
         {/* Amazon card with star breakdown */}
         <div style={{
           background: 'white', borderRadius: 14, padding: '16px 20px',
