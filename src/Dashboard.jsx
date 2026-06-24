@@ -509,12 +509,23 @@ export default function Dashboard() {
         {/* SALES */}
         {activeTab === 'sales' && (<>
           {(() => {
-            const recentWeeks = derived.filter(d => !d.pending && d.sales > 0).slice(-4)
+            const nonPending = derived.filter(d => !d.pending && d.sales > 0)
+            const recentWeeks = nonPending.slice(-4)
             const rolling4Avg = recentWeeks.length > 0
               ? Math.round(recentWeeks.reduce((s, d) => s + d.organic, 0) / recentWeeks.length)
               : null
             const rolling4Wks = recentWeeks.map(d => d.week).join(', ')
-            return (
+
+            // Build rolling average series — each point = avg of that week + 3 prior
+            const rollingData = filteredDerived
+              .filter(d => !d.pending)
+              .map((d, i, arr) => {
+                const window = arr.slice(Math.max(0, i - 3), i + 1)
+                const avg = Math.round(window.reduce((s, w) => s + w.organic, 0) / window.length)
+                return { week: d.week, rollingAvg: avg, organic: d.organic }
+              })
+
+            return (<>
               <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
                 <div style={{
                   background: 'white', borderRadius: 12, padding: '14px 20px',
@@ -525,23 +536,37 @@ export default function Dashboard() {
                   <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>Organic copies/week · {rolling4Wks}</div>
                 </div>
               </div>
-            )
+              <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan: Organic vs. Bulk</h2>
+              <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>★ = event · ◆ = press. Hover for detail.</p>
+              <ResponsiveContainer width="100%" height={280}>
+                <ComposedChart data={filteredDerived} margin={{ top: 28, right: 20, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="week" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
+                    <LabelList content={(props) => <MarkerLabel {...props} data={filteredDerived} />} />
+                  </Bar>
+                  <Bar dataKey="bulk" name="Bulk/Placement" stackId="a" fill={COLORS.bulk} radius={[4,4,0,0]} />
+                </ComposedChart>
+              </ResponsiveContainer>
+
+              <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>4-Week Rolling Average — Organic Sales</h2>
+              <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Each point = average of that week + 3 prior weeks. Smooths out spikes to show the underlying trend.</p>
+              <ResponsiveContainer width="100%" height={220}>
+                <ComposedChart data={rollingData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="week" tick={{ fontSize: 10 }} />
+                  <YAxis tick={{ fontSize: 10 }} />
+                  <Tooltip formatter={(val, name) => [val.toLocaleString(), name]} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar dataKey="organic" name="Weekly Organic" fill={COLORS.organic} fillOpacity={0.15} radius={[2,2,0,0]} />
+                  <Line type="monotone" dataKey="rollingAvg" name="4-Wk Rolling Avg" stroke={COLORS.organicGreen} strokeWidth={3} dot={{ r: 4, fill: COLORS.organicGreen }} />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </>)
           })()}
-          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan: Organic vs. Bulk</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>★ = event · ◆ = press. Hover for detail.</p>
-          <ResponsiveContainer width="100%" height={320}>
-            <ComposedChart data={filteredDerived} margin={{ top: 28, right: 20, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-              <XAxis dataKey="week" tick={{ fontSize: 10 }} />
-              <YAxis tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-              <Bar dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
-                <LabelList content={(props) => <MarkerLabel {...props} data={filteredDerived} />} />
-              </Bar>
-              <Bar dataKey="bulk" name="Bulk/Placement" stackId="a" fill={COLORS.bulk} radius={[4,4,0,0]} />
-            </ComposedChart>
-          </ResponsiveContainer>
         </>)}
 
         {/* PRESS */}
