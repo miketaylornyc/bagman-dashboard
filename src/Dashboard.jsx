@@ -218,6 +218,7 @@ export default function Dashboard() {
   const [error, setError]       = useState(null)
   const [activeTab, setActiveTab] = useState('combined')
   const [pressView, setPressView] = useState('weighted')
+  const [dateRange, setDateRange] = useState('all')
   const [lastUpdated, setLastUpdated] = useState(null)
 
   const loadData = async () => {
@@ -283,6 +284,12 @@ export default function Dashboard() {
     background: pressView === v ? '#db2877' : '#f3f4f6',
     color: pressView === v ? 'white' : '#6b7280',
   })
+  const rangeStyle = (r) => ({
+    padding: '5px 12px', borderRadius: 6, border: 'none', cursor: 'pointer',
+    fontSize: 11, fontWeight: 600,
+    background: dateRange === r ? '#16213e' : '#f3f4f6',
+    color: dateRange === r ? 'white' : '#6b7280',
+  })
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
@@ -300,7 +307,13 @@ export default function Dashboard() {
     </div>
   )
 
-  const weekSocial = derived.map(d => ({
+  const filteredDerived = useMemo(() => {
+    if (dateRange === 'pub') return derived.filter(d => parseInt(d.week.replace('Wk ', '')) <= 8)
+    if (dateRange === '6mo') return derived.filter(d => parseInt(d.week.replace('Wk ', '')) >= 19)
+    return derived
+  }, [derived, dateRange])
+
+  const weekSocial = filteredDerived.map(d => ({
     week: d.week,
     collabViews: d.collabViews,
     ownViews: d.ownViews,
@@ -432,10 +445,21 @@ export default function Dashboard() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-        {[['combined','Combined View'],['sales','Bookscan Sales'],['press','Press'],['events','Events'],['goodreads','Goodreads'],['social','Social Media'],['bulk','Bulk Orders']].map(([id, label]) => (
-          <button key={id} style={tabStyle(id)} onClick={() => setActiveTab(id)}>{label}</button>
-        ))}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {[['combined','Combined View'],['sales','Bookscan Sales'],['press','Press'],['events','Events'],['goodreads','Goodreads'],['social','Social Media'],['bulk','Bulk Orders']].map(([id, label]) => (
+            <button key={id} style={tabStyle(id)} onClick={() => setActiveTab(id)}>{label}</button>
+          ))}
+        </div>
+        {/* Date range toggles — only show for chart tabs */}
+        {['combined','sales','press','events','goodreads','social'].includes(activeTab) && (
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <span style={{ fontSize: 11, color: '#9ca3af', marginRight: 2 }}>View:</span>
+            <button style={rangeStyle('all')}  onClick={() => setDateRange('all')}>All Time</button>
+            <button style={rangeStyle('pub')}  onClick={() => setDateRange('pub')}>Publication Window</button>
+            <button style={rangeStyle('6mo')}  onClick={() => setDateRange('6mo')}>Last 6 Months</button>
+          </div>
+        )}
       </div>
 
       {/* Chart Panel */}
@@ -450,15 +474,15 @@ export default function Dashboard() {
             <span>GR right axis capped at 100 for readability. Publisher paid promotions (Sep 17–24 and Nov 21–Dec 1) drove spikes well above this — see the Goodreads tab for the full picture.</span>
           </div>
           <ResponsiveContainer width="100%" height={320}>
-            <ComposedChart data={derived} margin={{ top: 28, right: 40, left: 0, bottom: 0 }}>
+            <ComposedChart data={filteredDerived} margin={{ top: 28, right: 40, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, 100]} allowDataOverflow />
-              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
-                <LabelList content={(props) => <MarkerLabel {...props} data={derived} />} />
+                <LabelList content={(props) => <MarkerLabel {...props} data={filteredDerived} />} />
               </Bar>
               <Bar yAxisId="left" dataKey="bulk" name="Bulk/Placement" stackId="a" fill={COLORS.bulk} radius={[4,4,0,0]} />
               <Line yAxisId="right" type="monotone" dataKey="grAdded" name="GR Added" stroke={COLORS.grAdded} strokeWidth={2} dot={{ r: 3 }} />
@@ -471,14 +495,14 @@ export default function Dashboard() {
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan: Organic vs. Bulk</h2>
           <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>★ = event · ◆ = press. Hover for detail.</p>
           <ResponsiveContainer width="100%" height={320}>
-            <ComposedChart data={derived} margin={{ top: 28, right: 20, left: 0, bottom: 0 }}>
+            <ComposedChart data={filteredDerived} margin={{ top: 28, right: 20, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
-                <LabelList content={(props) => <MarkerLabel {...props} data={derived} />} />
+                <LabelList content={(props) => <MarkerLabel {...props} data={filteredDerived} />} />
               </Bar>
               <Bar dataKey="bulk" name="Bulk/Placement" stackId="a" fill={COLORS.bulk} radius={[4,4,0,0]} />
             </ComposedChart>
@@ -498,12 +522,12 @@ export default function Dashboard() {
             {pressView === 'weighted' ? 'Bar = weighted impact score. Color = dominant tier.' : 'Bar = raw hit count.'} Dark line = organic sales.
           </p>
           <ResponsiveContainer width="100%" height={280}>
-            <ComposedChart data={derived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
+            <ComposedChart data={filteredDerived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left" tick={{ fontSize: 10 }} allowDecimals={false} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey={pressView === 'weighted' ? 'pressWt' : 'pressRaw'}
                    name={pressView === 'weighted' ? 'Weighted Score' : 'Press Hits'} radius={[4,4,0,0]}>
@@ -565,12 +589,12 @@ export default function Dashboard() {
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Events vs. Organic Sales</h2>
           <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Purple bars = attendance. Dark line = organic sales. Impact often visible the following week.</p>
           <ResponsiveContainer width="100%" height={280}>
-            <ComposedChart data={derived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
+            <ComposedChart data={filteredDerived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="totalAttendance" name="Event Attendance" fill={COLORS.event} fillOpacity={0.25} radius={[4,4,0,0]} />
               <Line yAxisId="right" type="monotone" dataKey="organic" name="Organic Sales" stroke={COLORS.organic} strokeWidth={2.5} dot={{ r: 4, fill: COLORS.organic }} />
@@ -623,12 +647,12 @@ export default function Dashboard() {
             <span><strong>Publisher GR Promo #2: Nov 21–Dec 1, 2025 (Wks 6–8)</strong> — GR activity in this window is partly promotion-driven. Larger outlined dots mark affected weeks on the chart.</span>
           </div>
           <ResponsiveContainer width="100%" height={340}>
-            <ComposedChart data={derived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
+            <ComposedChart data={filteredDerived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="right" dataKey="pressWt" name="Press Weighted Score" radius={[3,3,0,0]}>
                 {derived.map((entry, i) => <Cell key={i} fill={entry.domColor} fillOpacity={0.25} />)}
