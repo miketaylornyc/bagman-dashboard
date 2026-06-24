@@ -145,6 +145,11 @@ const CustomTooltip = ({ active, payload, label, data, bulk }) => {
       {row?.bookscanNote && <div style={{ fontSize: 10, color: '#f59e0b', fontWeight: 700, marginBottom: 4 }}>⚑ {row.bookscanNote}</div>}
       {row?.grPromo && <div style={{ fontSize: 10, color: '#166534', fontWeight: 700, marginBottom: 6 }}>📗 GR Paid Promo active (Nov 21–Dec 1)</div>}
       {row?.pending && <div style={{ fontSize: 10, color: '#9ca3af', fontWeight: 700, marginBottom: 6 }}>⏳ Bookscan data pending</div>}
+      {!row?.pending && row?.sales > 0 && (
+        <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.organic, marginBottom: 4, paddingBottom: 4, borderBottom: '1px solid #f0f0f0' }}>
+          Bookscan Total: {row.sales.toLocaleString()}
+        </div>
+      )}
       {payload.map(p => (
         <div key={p.name} style={{ fontSize: 12, color: p.color || p.fill, marginBottom: 2 }}>
           {p.name}: <strong>{typeof p.value === 'number' ? p.value.toLocaleString() : p.value}</strong>
@@ -663,8 +668,8 @@ export default function Dashboard() {
 
         {/* EVENTS */}
         {activeTab === 'events' && (<>
-          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Events vs. Organic Sales</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Purple bars = attendance. Dark line = organic sales. Impact often visible the following week.</p>
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Events vs. Bulk Sales</h2>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Purple bars = attendance. Gray line = bulk/placement sales. Events often drive direct bulk purchases.</p>
           <ResponsiveContainer width="100%" height={280}>
             <ComposedChart data={filteredDerived} margin={{ top: 16, right: 40, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -674,7 +679,7 @@ export default function Dashboard() {
               <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="totalAttendance" name="Event Attendance" fill={COLORS.event} fillOpacity={0.25} radius={[4,4,0,0]} />
-              <Line yAxisId="right" type="monotone" dataKey="organic" name="Organic Sales" stroke={COLORS.organic} strokeWidth={2.5} dot={{ r: 4, fill: COLORS.organic }} />
+              <Line yAxisId="right" type="monotone" dataKey="bulk" name="Bulk Sales" stroke="#94a3b8" strokeWidth={2.5} dot={{ r: 4, fill: '#94a3b8' }} />
             </ComposedChart>
           </ResponsiveContainer>
 
