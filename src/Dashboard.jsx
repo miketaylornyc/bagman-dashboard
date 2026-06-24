@@ -491,25 +491,26 @@ export default function Dashboard() {
         </>)}
 
         {/* SALES */}
-        {activeTab === 'sales' && (() => {
-          // Rolling 4-week average using the 4 most recent non-pending weeks
-          const recentWeeks = derived.filter(d => !d.pending && d.sales > 0).slice(-4)
-          const rolling4Avg = recentWeeks.length > 0
-            ? Math.round(recentWeeks.reduce((s, d) => s + d.organic, 0) / recentWeeks.length)
-            : null
-          const rolling4Wks = recentWeeks.map(d => d.week).join(', ')
-          return (<>
-          <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
-            <div style={{
-              background: 'white', borderRadius: 12, padding: '14px 20px',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderTop: `4px solid ${COLORS.organicGreen}`,
-              flex: '0 0 auto'
-            }}>
-              <div style={{ fontSize: 28, fontWeight: 800, color: COLORS.organicGreen }}>{rolling4Avg?.toLocaleString() ?? '—'}</div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginTop: 2 }}>4-Week Rolling Avg</div>
-              <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>Organic copies/week · {rolling4Wks}</div>
-            </div>
-          </div>
+        {activeTab === 'sales' && (<>
+          {(() => {
+            const recentWeeks = derived.filter(d => !d.pending && d.sales > 0).slice(-4)
+            const rolling4Avg = recentWeeks.length > 0
+              ? Math.round(recentWeeks.reduce((s, d) => s + d.organic, 0) / recentWeeks.length)
+              : null
+            const rolling4Wks = recentWeeks.map(d => d.week).join(', ')
+            return (
+              <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+                <div style={{
+                  background: 'white', borderRadius: 12, padding: '14px 20px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderTop: `4px solid ${COLORS.organicGreen}`,
+                }}>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: COLORS.organicGreen }}>{rolling4Avg?.toLocaleString() ?? '—'}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginTop: 2 }}>4-Week Rolling Avg</div>
+                  <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>Organic copies/week · {rolling4Wks}</div>
+                </div>
+              </div>
+            )
+          })()}
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan: Organic vs. Bulk</h2>
           <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>★ = event · ◆ = press. Hover for detail.</p>
           <ResponsiveContainer width="100%" height={320}>
@@ -525,7 +526,7 @@ export default function Dashboard() {
               <Bar dataKey="bulk" name="Bulk/Placement" stackId="a" fill={COLORS.bulk} radius={[4,4,0,0]} />
             </ComposedChart>
           </ResponsiveContainer>
-        </>)})()
+        </>)}
 
         {/* PRESS */}
         {activeTab === 'press' && (<>
