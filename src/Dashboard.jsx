@@ -539,16 +539,6 @@ export default function Dashboard() {
               })
 
             return (<>
-              <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
-                <div style={{
-                  background: 'white', borderRadius: 12, padding: '14px 20px',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderTop: `4px solid ${COLORS.organicGreen}`,
-                }}>
-                  <div style={{ fontSize: 28, fontWeight: 800, color: COLORS.organicGreen }}>{rolling4Avg?.toLocaleString() ?? '—'}</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginTop: 2 }}>4-Week Rolling Avg</div>
-                  <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>Organic copies/week · {rolling4Wks}</div>
-                </div>
-              </div>
               <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 4px' }}>Weekly Bookscan: Organic vs. Bulk</h2>
               <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 8 }}>★ = event · ◆ = press. Hover for detail.</p>
               <div style={{
@@ -574,7 +564,17 @@ export default function Dashboard() {
               </ResponsiveContainer>
 
               <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>4-Week Rolling Average — Organic Sales</h2>
-              <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Each point = average of that week + 3 prior weeks. Smooths out spikes to show the underlying trend.</p>
+              <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Each point = average of that week + 3 prior weeks. Smooths out spikes to show the underlying trend.</p>
+              <div style={{ display: 'flex', gap: 12, marginBottom: 16 }}>
+                <div style={{
+                  background: 'white', borderRadius: 12, padding: '14px 20px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.06)', borderTop: `4px solid ${COLORS.organicGreen}`,
+                }}>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: COLORS.organicGreen }}>{rolling4Avg?.toLocaleString() ?? '—'}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginTop: 2 }}>Current 4-Week Rolling Avg</div>
+                  <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>Organic copies/week · {rolling4Wks}</div>
+                </div>
+              </div>
               <ResponsiveContainer width="100%" height={220}>
                 <ComposedChart data={rollingData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -736,12 +736,33 @@ export default function Dashboard() {
               <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="right" dataKey="pressWt" name="Press Weighted Score" radius={[3,3,0,0]}>
-                {derived.map((entry, i) => <Cell key={i} fill={entry.domColor} fillOpacity={0.25} />)}
+                {filteredDerived.map((entry, i) => <Cell key={i} fill={entry.domColor} fillOpacity={0.25} />)}
               </Bar>
               <Line yAxisId="left" type="monotone" dataKey="grAdded"   name="GR Total Added"  stroke={COLORS.grAdded}   strokeWidth={2.5} dot={makePromoDot(COLORS.grAdded)} />
               <Line yAxisId="left" type="monotone" dataKey="grToRead"  name="GR Want to Read" stroke={COLORS.grToRead}  strokeWidth={2}   dot={makePromoDot(COLORS.grToRead)} />
               <Line yAxisId="left" type="monotone" dataKey="grRatings" name="GR Ratings"      stroke={COLORS.grRatings} strokeWidth={2}   dot={makePromoDot(COLORS.grRatings)} />
-              <Line yAxisId="left" type="monotone" dataKey="grReviews" name="GR Reviews"      stroke="#6366f1"          strokeWidth={2}   dot={makePromoDot('#6366f1')} />
+            </ComposedChart>
+          </ResponsiveContainer>
+
+          {/* Cumulative Reviews chart */}
+          <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Cumulative GR Reviews Over Time</h2>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Running total of written Goodreads reviews. Each review represents a reader engaged enough to write about the book.</p>
+          <ResponsiveContainer width="100%" height={200}>
+            <ComposedChart
+              data={(() => {
+                let cumulative = 0
+                return derived.map(d => {
+                  cumulative += (d.grReviews || 0)
+                  return { week: d.week, cumulativeReviews: cumulative }
+                })
+              })()}
+              margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+              <XAxis dataKey="week" tick={{ fontSize: 10 }} />
+              <YAxis tick={{ fontSize: 10 }} allowDecimals={false} />
+              <Tooltip formatter={(val) => [val, 'Cumulative Reviews']} />
+              <Line type="monotone" dataKey="cumulativeReviews" name="Cumulative Reviews" stroke="#6366f1" strokeWidth={3} dot={{ r: 3, fill: '#6366f1' }} />
             </ComposedChart>
           </ResponsiveContainer>
         </>)}
