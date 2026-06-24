@@ -775,56 +775,59 @@ export default function Dashboard() {
 
           {/* Word Cloud from reader reviews */}
           <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Reader Sentiment — Word Cloud</h2>
-          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Key words from all 37 Amazon & Goodreads reviews. Size = frequency of mention.</p>
+          <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 16 }}>Key words from all 68 Amazon & Goodreads reviews. Size = frequency of mention.</p>
           <div style={{
             background: '#f8f9fb', borderRadius: 12, padding: '28px 24px',
             border: '1px solid #e5e7eb', lineHeight: 2.6, textAlign: 'center'
           }}>
             {[
-              { word: 'leadership', size: 34, color: '#16213e' },
-              { word: 'brand', size: 32, color: '#c9a84c' },
+              { word: 'leadership', size: 36, color: '#16213e' },
+              { word: 'brand', size: 36, color: '#c9a84c' },
+              { word: 'inspiring', size: 30, color: '#e07b39' },
+              { word: 'family', size: 30, color: '#e1306c' },
               { word: 'lessons', size: 28, color: '#4a9b8f' },
-              { word: 'journey', size: 28, color: '#7c3aed' },
-              { word: 'inspiring', size: 28, color: '#e07b39' },
-              { word: 'family', size: 28, color: '#e1306c' },
-              { word: 'success', size: 26, color: '#16213e' },
+              { word: 'luxury', size: 28, color: '#c9a84c' },
+              { word: 'journey', size: 26, color: '#7c3aed' },
               { word: 'honest', size: 26, color: '#4a9b8f' },
+              { word: 'growth', size: 26, color: '#16213e' },
+              { word: 'fashion', size: 26, color: '#e1306c' },
+              { word: 'mental health', size: 24, color: '#7c3aed' },
+              { word: 'success', size: 24, color: '#c9a84c' },
               { word: 'magic', size: 24, color: '#c9a84c' },
               { word: 'legacy', size: 24, color: '#16213e' },
-              { word: 'curiosity', size: 22, color: '#4a9b8f' },
-              { word: 'wisdom', size: 22, color: '#c9a84c' },
-              { word: 'mental health', size: 22, color: '#7c3aed' },
-              { word: 'excellence', size: 22, color: '#16213e' },
-              { word: 'iconic', size: 22, color: '#c9a84c' },
-              { word: 'global', size: 22, color: '#4a9b8f' },
-              { word: 'growth', size: 22, color: '#e07b39' },
+              { word: 'excellence', size: 24, color: '#4a9b8f' },
+              { word: 'human', size: 22, color: '#e07b39' },
+              { word: 'creative', size: 22, color: '#7c3aed' },
+              { word: 'American dream', size: 22, color: '#c9a84c' },
               { word: 'logic', size: 20, color: '#16213e' },
               { word: 'memoir', size: 20, color: '#6b7280' },
-              { word: 'integrity', size: 20, color: '#16213e' },
-              { word: 'heart', size: 20, color: '#e1306c' },
-              { word: 'page-turner', size: 20, color: '#7c3aed' },
-              { word: 'American dream', size: 18, color: '#c9a84c' },
-              { word: 'Bronx', size: 18, color: '#6b7280' },
-              { word: 'challenges', size: 18, color: '#16213e' },
-              { word: 'luxury', size: 18, color: '#c9a84c' },
-              { word: 'teams', size: 18, color: '#4a9b8f' },
+              { word: 'Bronx', size: 20, color: '#6b7280' },
+              { word: 'leather', size: 20, color: '#c9a84c' },
+              { word: 'iconic', size: 20, color: '#16213e' },
+              { word: 'curiosity', size: 18, color: '#4a9b8f' },
+              { word: 'wisdom', size: 18, color: '#c9a84c' },
+              { word: 'integrity', size: 18, color: '#16213e' },
+              { word: 'heart', size: 18, color: '#e1306c' },
+              { word: 'depression', size: 18, color: '#7c3aed' },
+              { word: 'anxiety', size: 18, color: '#7c3aed' },
+              { word: 'accessible luxury', size: 18, color: '#c9a84c' },
               { word: 'building', size: 18, color: '#16213e' },
-              { word: 'depression', size: 16, color: '#7c3aed' },
-              { word: 'anxiety', size: 16, color: '#7c3aed' },
+              { word: 'page-turner', size: 16, color: '#7c3aed' },
               { word: 'perseverance', size: 16, color: '#e07b39' },
-              { word: 'authentic', size: 16, color: '#4a9b8f' },
-              { word: 'fashion', size: 16, color: '#e1306c' },
-              { word: 'accessible luxury', size: 16, color: '#c9a84c' },
-              { word: 'must-read', size: 16, color: '#16213e' },
-              { word: 'humility', size: 15, color: '#e07b39' },
-              { word: 'vulnerability', size: 15, color: '#7c3aed' },
-              { word: 'purpose', size: 15, color: '#4a9b8f' },
-              { word: 'resilience', size: 14, color: '#16213e' },
-              { word: 'entrepreneurship', size: 14, color: '#c9a84c' },
-              { word: 'generosity', size: 14, color: '#e1306c' },
+              { word: 'humility', size: 16, color: '#4a9b8f' },
+              { word: 'vulnerability', size: 16, color: '#7c3aed' },
+              { word: 'resilience', size: 16, color: '#16213e' },
+              { word: 'teams', size: 16, color: '#4a9b8f' },
+              { word: 'quality', size: 15, color: '#c9a84c' },
+              { word: 'purpose', size: 15, color: '#e07b39' },
+              { word: 'authenticity', size: 15, color: '#4a9b8f' },
+              { word: 'must-read', size: 15, color: '#16213e' },
+              { word: 'employees', size: 14, color: '#6b7280' },
+              { word: 'reinvention', size: 14, color: '#7c3aed' },
+              { word: 'EQ', size: 14, color: '#c9a84c' },
             ].sort(() => Math.random() - 0.5).map(({ word, size, color }) => (
               <span key={word} style={{
-                fontSize: size, color, fontWeight: size >= 28 ? 800 : size >= 22 ? 700 : size >= 18 ? 600 : 400,
+                fontSize: size, color, fontWeight: size >= 30 ? 800 : size >= 22 ? 700 : size >= 18 ? 600 : 400,
                 margin: `0 ${Math.floor(size * 0.45)}px`, display: 'inline-block',
                 cursor: 'default', transition: 'opacity 0.2s',
               }}
@@ -834,7 +837,7 @@ export default function Dashboard() {
             ))}
           </div>
           <p style={{ fontSize: 10, color: '#c4c9d4', textAlign: 'center', marginTop: 8 }}>
-            Based on all 37 Amazon reviews (as of Feb 19, 2026) + Goodreads written reviews
+            Based on 37 Amazon reviews + 31 Goodreads reviews · 68 total
           </p>
         </>)}
 
