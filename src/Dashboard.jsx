@@ -145,7 +145,7 @@ const CustomTooltip = ({ active, payload, label, data, bulk }) => {
       {row?.bookscanNote && <div style={{ fontSize: 10, color: '#f59e0b', fontWeight: 700, marginBottom: 4 }}>⚑ {row.bookscanNote}</div>}
       {row?.grPromo && <div style={{ fontSize: 10, color: '#166534', fontWeight: 700, marginBottom: 6 }}>📗 GR Paid Promo active (Nov 21–Dec 1)</div>}
       {row?.pending && <div style={{ fontSize: 10, color: '#9ca3af', fontWeight: 700, marginBottom: 6 }}>⏳ Bookscan data pending</div>}
-      {!row?.pending && row?.sales > 0 && (
+      {!row?.pending && row?.sales !== undefined && (
         <div style={{ fontSize: 12, fontWeight: 700, color: COLORS.organic, marginBottom: 4, paddingBottom: 4, borderBottom: '1px solid #f0f0f0' }}>
           Bookscan Total: {row.sales.toLocaleString()}
         </div>
@@ -508,7 +508,7 @@ export default function Dashboard() {
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, 100]} allowDataOverflow />
-              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
                 <LabelList content={(props) => <MarkerLabel {...props} data={filteredDerived} />} />
@@ -564,7 +564,7 @@ export default function Dashboard() {
                   <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                   <XAxis dataKey="week" tick={{ fontSize: 10 }} />
                   <YAxis tick={{ fontSize: 10 }} />
-                  <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
+                  <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                   <Bar dataKey="organic" name="Organic Sales" stackId="a" fill={COLORS.organic}>
                     <LabelList content={(props) => <MarkerLabel {...props} data={filteredDerived} />} />
@@ -608,7 +608,7 @@ export default function Dashboard() {
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left" tick={{ fontSize: 10 }} allowDecimals={false} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey={pressView === 'weighted' ? 'pressWt' : 'pressRaw'}
                    name={pressView === 'weighted' ? 'Weighted Score' : 'Press Hits'} radius={[4,4,0,0]}>
@@ -675,7 +675,7 @@ export default function Dashboard() {
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="left" dataKey="totalAttendance" name="Event Attendance" fill={COLORS.event} fillOpacity={0.25} radius={[4,4,0,0]} />
               <Line yAxisId="right" type="monotone" dataKey="bulk" name="Bulk Sales" stroke="#94a3b8" strokeWidth={2.5} dot={{ r: 4, fill: '#94a3b8' }} />
@@ -733,7 +733,7 @@ export default function Dashboard() {
               <XAxis dataKey="week" tick={{ fontSize: 10 }} />
               <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
               <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
-              <Tooltip content={<CustomTooltip data={filteredDerived} bulk={rawData?.bulk} />} />
+              <Tooltip content={<CustomTooltip data={derived} bulk={rawData?.bulk} />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar yAxisId="right" dataKey="pressWt" name="Press Weighted Score" radius={[3,3,0,0]}>
                 {derived.map((entry, i) => <Cell key={i} fill={entry.domColor} fillOpacity={0.25} />)}
