@@ -3,7 +3,7 @@ import { fetchAllData } from './sheets.js'
 import EventMap from './EventMap.jsx'
 import {
   ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer, LabelList, Cell
+  Tooltip, Legend, ResponsiveContainer, LabelList, Cell, ReferenceLine
 } from 'recharts'
 
 // ── CONSTANTS ─────────────────────────────────────────────────────────────────
@@ -749,8 +749,105 @@ export default function Dashboard() {
         {/* SOCIAL */}
         {activeTab === 'social' && (() => {
           const top10 = [...allSocial].sort((a,b) => b.views - a.views).slice(0,10)
+
+          // Hardcoded audience growth data (end of month follower counts)
+          const audienceData = [
+            { month: 'Aug',  ig: 254,  li: 980  },
+            { month: 'Sep',  ig: 362,  li: 1068 },
+            { month: 'Oct',  ig: 905,  li: 1550 },
+            { month: 'Nov',  ig: 2313, li: 1787 },
+            { month: 'Dec',  ig: 2660, li: 1965 },
+            { month: 'Jan',  ig: 2723, li: 2061 },
+            { month: 'Feb',  ig: 2796, li: 2175 },
+            { month: 'Mar',  ig: 2850, li: 2259 },
+            { month: 'Apr',  ig: 2921, li: 2315 },
+            { month: 'May',  ig: 2991, li: 2402 },
+            { month: 'Jun',  ig: 3011, li: 2519 },
+          ]
+
+          // Month-over-month growth
+          const igGrowth  = audienceData[audienceData.length-1].ig  - audienceData[0].ig
+          const liGrowth  = audienceData[audienceData.length-1].li  - audienceData[0].li
+          const igCurrent = audienceData[audienceData.length-1].ig
+          const liCurrent = audienceData[audienceData.length-1].li
+
+          // Big collab months for IG annotation
+          const collabMonths = ['Oct', 'Nov'] // launch + Veronica Beard, Q Everything
+
           return (<>
-            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 16px' }}>Notable Social Posts</h2>
+            <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '0 0 16px' }}>Audience Growth</h2>
+
+            {/* Audience stat cards */}
+            <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
+              {[
+                { label: 'Instagram Followers', value: igCurrent.toLocaleString(), growth: `+${igGrowth.toLocaleString()} since Aug`, color: '#e1306c', sub: 'End of Jun 2026' },
+                { label: 'LinkedIn Followers',  value: liCurrent.toLocaleString(), growth: `+${liGrowth.toLocaleString()} since Aug`, color: '#0077b5', sub: 'End of Jun 2026' },
+              ].map(c => (
+                <div key={c.label} style={{
+                  background: 'white', borderRadius: 12, padding: '14px 20px',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.06)', flex: '1 1 160px',
+                  borderTop: `4px solid ${c.color}`
+                }}>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: c.color }}>{c.value}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginTop: 2 }}>{c.label}</div>
+                  <div style={{ fontSize: 10, color: '#22c55e', fontWeight: 600, marginTop: 2 }}>{c.growth}</div>
+                  <div style={{ fontSize: 10, color: '#9ca3af' }}>{c.sub}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Audience growth chart */}
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 4 }}>Follower Growth — Instagram & LinkedIn</div>
+            <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Oct = book launch · Shaded months had major collab posts on Instagram</p>
+            <ResponsiveContainer width="100%" height={260}>
+              <ComposedChart data={audienceData} margin={{ top: 10, right: 40, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                <YAxis yAxisId="ig" tick={{ fontSize: 10 }} />
+                <YAxis yAxisId="li" orientation="right" tick={{ fontSize: 10 }} />
+                <Tooltip formatter={(val, name) => [val.toLocaleString(), name]} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                {collabMonths.map(m => (
+                  <ReferenceLine key={m} yAxisId="ig" x={m}
+                    stroke="#e1306c" strokeOpacity={0.15} strokeWidth={20} />
+                ))}
+                <Line yAxisId="ig" type="monotone" dataKey="ig" name="Instagram" stroke="#e1306c" strokeWidth={2.5} dot={{ r: 4, fill: '#e1306c' }} />
+                <Line yAxisId="li" type="monotone" dataKey="li" name="LinkedIn"  stroke="#0077b5" strokeWidth={2.5} dot={{ r: 4, fill: '#0077b5' }} />
+              </ComposedChart>
+            </ResponsiveContainer>
+
+            {/* MoM growth chart */}
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', margin: '24px 0 4px' }}>Month-over-Month New Followers</div>
+            <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Net new followers each month. Shaded = major collab activity on Instagram.</p>
+            <ResponsiveContainer width="100%" height={200}>
+              <ComposedChart
+                data={audienceData.slice(1).map((d, i) => ({
+                  month: d.month,
+                  igNew: d.ig - audienceData[i].ig,
+                  liNew: d.li - audienceData[i].li,
+                  collab: collabMonths.includes(d.month),
+                }))}
+                margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+                <YAxis tick={{ fontSize: 10 }} />
+                <Tooltip formatter={(val, name) => [`+${val.toLocaleString()}`, name]} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                {collabMonths.map(m => (
+                  <ReferenceLine key={m} x={m}
+                    stroke="#e1306c" strokeOpacity={0.15} strokeWidth={20} />
+                ))}
+                <Bar dataKey="igNew" name="Instagram New" fill="#e1306c" fillOpacity={0.7} radius={[3,3,0,0]} />
+                <Bar dataKey="liNew" name="LinkedIn New"  fill="#0077b5" fillOpacity={0.7} radius={[3,3,0,0]} />
+              </ComposedChart>
+            </ResponsiveContainer>
+
+            <div style={{ background: '#fdf2f8', border: '1px solid #fbcfe8', borderRadius: 8, padding: '8px 14px', marginTop: 12, marginBottom: 20, fontSize: 11, color: '#9d174d' }}>
+              🔴 Shaded months (Oct, Nov) had the highest Instagram collab activity — Trailer Launch (256K views), Veronica Beard (93K), Question Everything (57K+). The correlation with follower spikes is clear.
+            </div>
+
+            {/* Weekly views chart */}
             <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 8 }}>Weekly Social Views vs. Organic Sales</div>
             <ResponsiveContainer width="100%" height={240}>
               <ComposedChart data={weekSocial} margin={{ top: 8, right: 40, left: 0, bottom: 0 }}>
@@ -765,6 +862,7 @@ export default function Dashboard() {
                 <Line yAxisId="right" type="monotone" dataKey="organic" name="Organic Sales" stroke={COLORS.organic} strokeWidth={2} dot={{ r: 3 }} />
               </ComposedChart>
             </ResponsiveContainer>
+
             <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', margin: '20px 0 10px' }}>Top 10 Posts by Views</div>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
               <thead>
