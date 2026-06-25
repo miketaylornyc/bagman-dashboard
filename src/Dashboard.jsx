@@ -894,7 +894,7 @@ export default function Dashboard() {
             <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 4 }}>Follower Growth — Instagram & LinkedIn</div>
             <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Oct = book launch · Shaded months had major collab posts on Instagram</p>
             <ResponsiveContainer width="100%" height={260}>
-              <ComposedChart data={audienceData} margin={{ top: 10, right: 40, left: 0, bottom: 0 }}>
+              <ComposedChart data={audienceData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} />
