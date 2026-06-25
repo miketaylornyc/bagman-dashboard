@@ -386,7 +386,9 @@ export default function Dashboard() {
         }}>
           <div style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', letterSpacing: 1, marginBottom: 10 }}>EVENTS</div>
           <div style={{ fontSize: 36, fontWeight: 800, color: COLORS.event, lineHeight: 1 }}>{totalEvents}</div>
-          <div style={{ fontSize: 11, color: '#374151', fontWeight: 600, marginTop: 8 }}>{totalAttendance.toLocaleString()} total attendees</div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: '#9ca3af', marginTop: 6, marginBottom: 8, letterSpacing: 1 }}>EVENTS</div>
+          <div style={{ fontSize: 28, fontWeight: 800, color: '#374151', lineHeight: 1 }}>{totalAttendance.toLocaleString()}</div>
+          <div style={{ fontSize: 12, fontWeight: 600, color: '#6b7280', marginTop: 4 }}>total attendees</div>
           <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 4 }}>NYC · Toronto · NJ</div>
         </div>
         {/* Amazon card with star breakdown */}
