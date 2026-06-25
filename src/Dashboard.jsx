@@ -308,6 +308,7 @@ export default function Dashboard() {
     collabViews: d.collabViews,
     ownViews: d.ownViews,
     organic: d.organic,
+    socialPosts: d.socialPosts || [],
   }))
 
   if (loading) return (
@@ -948,7 +949,35 @@ export default function Dashboard() {
                 <XAxis dataKey="week" tick={{ fontSize: 10 }} />
                 <YAxis yAxisId="left"  tick={{ fontSize: 10 }} />
                 <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(val) => val.toLocaleString()} />
+                <Tooltip content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null
+                  const d = weekSocial.find(w => w.week === label)
+                  return (
+                    <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 10, padding: '12px 14px', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', minWidth: 220, maxWidth: 300 }}>
+                      <div style={{ fontWeight: 700, color: '#1a1a2e', marginBottom: 6 }}>{label}</div>
+                      {payload.map(p => (
+                        <div key={p.name} style={{ fontSize: 12, color: p.color || p.fill, marginBottom: 2 }}>
+                          {p.name}: <strong>{(p.value || 0).toLocaleString()}</strong>
+                        </div>
+                      ))}
+                      {d?.socialPosts?.length > 0 && (
+                        <div style={{ marginTop: 8, borderTop: '1px solid #f0f0f0', paddingTop: 8 }}>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: '#6b7280', marginBottom: 4 }}>POSTS THIS WEEK</div>
+                          {d.socialPosts.map((p, i) => (
+                            <div key={i} style={{ marginBottom: 5 }}>
+                              <div style={{ fontSize: 11, fontWeight: 600, color: '#374151' }}>{p.content}</div>
+                              <div style={{ fontSize: 10, color: '#9ca3af' }}>
+                                <span style={{ color: p.platform === 'Instagram' ? '#e1306c' : '#0077b5' }}>{p.platform}</span>
+                                {p.collab && <span style={{ color: '#7c3aed' }}> · Collab</span>}
+                                <span> · {p.views.toLocaleString()} views</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                }} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
                 <Bar yAxisId="left" dataKey="collabViews" name="Collab Views"   stackId="s" fill="#7c3aed" fillOpacity={0.7} />
                 <Bar yAxisId="left" dataKey="ownViews"    name="Own Post Views" stackId="s" fill="#a8b4c8" fillOpacity={0.7} radius={[4,4,0,0]} />
