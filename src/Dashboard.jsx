@@ -895,17 +895,66 @@ export default function Dashboard() {
 
             {/* Audience growth chart */}
             <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 4 }}>Follower Growth — Instagram & LinkedIn</div>
-            <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Oct = book launch · Shaded months had major collab posts on Instagram</p>
-            <ResponsiveContainer width="100%" height={260}>
-              <ComposedChart data={audienceData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Oct = book launch · ★ = major collab post on Instagram · hover for details</p>
+            <ResponsiveContainer width="100%" height={300}>
+              <ComposedChart data={audienceData} margin={{ top: 30, right: 10, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis dataKey="month" tick={{ fontSize: 10 }} />
                 <YAxis tick={{ fontSize: 10 }} />
-                <Tooltip formatter={(val, name) => [val.toLocaleString(), name]} />
+                <Tooltip content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null
+                  const monthPosts = {
+                    'Oct': [
+                      { content: 'Trailer Launch', views: 256000 },
+                      { content: 'Launch Party Carousel', views: 121000 },
+                      { content: 'Launch Day (own)', views: 23700 },
+                    ],
+                    'Nov': [
+                      { content: 'Success Story Clip', views: 156000 },
+                      { content: 'B&N Clip LinkedIn', views: 133300 },
+                      { content: 'Gary Vee Clip', views: 102000 },
+                      { content: 'Veronica Beard Carousel', views: 93000 },
+                      { content: 'Question Everything Clip 1', views: 57600 },
+                      { content: 'Question Everything Clip 2', views: 51900 },
+                    ],
+                    'Dec': [{ content: 'Miles Nadal + Veronica Beard posts', views: null }],
+                  }
+                  const posts = monthPosts[label] || []
+                  return (
+                    <div style={{ background: 'white', border: '1px solid #e5e7eb', borderRadius: 10, padding: '12px 14px', boxShadow: '0 4px 16px rgba(0,0,0,0.12)', minWidth: 220 }}>
+                      <div style={{ fontWeight: 700, color: '#1a1a2e', marginBottom: 6 }}>{label} 2025{label === 'Jun' ? ' 2026' : ''}</div>
+                      {payload.map(p => (
+                        <div key={p.name} style={{ fontSize: 12, color: p.color, marginBottom: 2 }}>
+                          {p.name}: <strong>{p.value?.toLocaleString()}</strong>
+                        </div>
+                      ))}
+                      {posts.length > 0 && (
+                        <div style={{ marginTop: 8, borderTop: '1px solid #f0f0f0', paddingTop: 8 }}>
+                          <div style={{ fontSize: 10, fontWeight: 700, color: '#e1306c', marginBottom: 4 }}>★ COLLAB POSTS</div>
+                          {posts.map((p, i) => (
+                            <div key={i} style={{ fontSize: 11, marginBottom: 3 }}>
+                              <span style={{ fontWeight: 600, color: '#374151' }}>{p.content}</span>
+                              {p.views && <span style={{ color: '#9ca3af' }}> · {p.views.toLocaleString()} views</span>}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                }} />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
+                {/* Shaded collab months */}
                 {collabMonths.map(m => (
                   <ReferenceLine key={m} x={m}
-                    stroke="#e1306c" strokeOpacity={0.15} strokeWidth={20} />
+                    stroke="#e1306c" strokeOpacity={0.12} strokeWidth={24} />
+                ))}
+                {/* Star labels for major collab months */}
+                {[
+                  { month: 'Oct', label: '★ Trailer\n256K' },
+                  { month: 'Nov', label: '★ 6 collabs\n615K views' },
+                ].map(({ month, label }) => (
+                  <ReferenceLine key={month} x={month} stroke="#e1306c" strokeWidth={0}
+                    label={{ value: label, position: 'top', fill: '#e1306c', fontSize: 9, fontWeight: 700 }} />
                 ))}
                 <Line type="monotone" dataKey="ig" name="Instagram" stroke="#e1306c" strokeWidth={2.5} dot={{ r: 4, fill: '#e1306c' }} />
                 <Line type="monotone" dataKey="li" name="LinkedIn"  stroke="#0077b5" strokeWidth={2.5} dot={{ r: 4, fill: '#0077b5' }} />
