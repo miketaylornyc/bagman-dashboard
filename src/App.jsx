@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Dashboard from './Dashboard.jsx'
 
 // Change this password to whatever you want
-const PASSWORD = 'bagman2025'
+const PASSWORD = 'bagman2026'
 
 export default function App() {
   const [authed, setAuthed] = useState(
