@@ -18,7 +18,7 @@ const TABS = {
   social:      '552142358',
   goodreads:   '434944970',
   grSnapshot:  '827853497',
-  audiobook:   '67258967',
+  audiobook:   '1592027256',
 }
 
 const csvUrl = (gid) => `${BASE_URL}?output=csv&gid=${gid}`
@@ -157,17 +157,20 @@ export async function fetchAllData() {
       amazon1Star:     num(grSnapshotRows[0]['Amazon 1 Star']),
     } : null
 
-    // ── AUDIOBOOK SALES (periodic reports from Recorded Books) ───────────────
-    // Columns: Date | Units Sold | Notes
-    const audiobook = parseCSV(audiobookCSV).map(r => ({
-      date:  r['Date'],
-      units: num(r['Units Sold']),
-      notes: r['Notes'] || '',
+    // ── AUDIO & EBOOK SALES (periodic reports) ───────────────────────────────
+    // Columns: Date | Format | Units Sold | Notes
+    const digitalRows = parseCSV(audiobookCSV).map(r => ({
+      date:   r['Date'],
+      format: (r['Format'] || '').toLowerCase(),
+      units:  num(r['Units Sold']),
+      notes:  r['Notes'] || '',
     }))
+    const audiobook = digitalRows.filter(r => r.format === 'audiobook')
+    const ebook     = digitalRows.filter(r => r.format === 'ebook')
 
-    return { bookscan, press, events, bulk, social, grSnapshot, audiobook, error: null }
+    return { bookscan, press, events, bulk, social, grSnapshot, audiobook, ebook, error: null }
   } catch (err) {
     console.error('Failed to fetch sheet data:', err)
-    return { bookscan: [], press: [], events: [], bulk: [], social: [], grSnapshot: null, audiobook: [], error: err.message }
+    return { bookscan: [], press: [], events: [], bulk: [], social: [], grSnapshot: null, audiobook: [], ebook: [], error: err.message }
   }
 }

@@ -271,9 +271,12 @@ export default function Dashboard() {
   const organicPct      = totalSales > 0 ? Math.round((totalOrganic / totalSales) * 100) : 0
   const bulkPct         = totalSales > 0 ? Math.round((totalBulk    / totalSales) * 100) : 0
   const audiobook       = rawData?.audiobook ?? []
+  const ebook           = rawData?.ebook     ?? []
   const audiobookLatest = audiobook.length > 0 ? audiobook[audiobook.length - 1] : null
+  const ebookLatest     = ebook.length     > 0 ? ebook[ebook.length - 1]         : null
   const audiobookUnits  = audiobookLatest?.units ?? 0
-  const totalCopiesSold = totalSales + 2000 + 200 + audiobookUnits
+  const ebookUnits      = ebookLatest?.units     ?? 0
+  const totalCopiesSold = totalSales + 2000 + 200 + audiobookUnits + ebookUnits
   const allSocial       = rawData?.social || []
   const totalSocialViews = allSocial.reduce((s, p) => s + p.views, 0)
   const collabPosts     = allSocial.filter(p => p.collab)
@@ -374,11 +377,12 @@ export default function Dashboard() {
 
       {/* Stat Cards */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
-        <StatCard label="Total Copies Sold" value={totalCopiesSold.toLocaleString()} sub="Hardcover + Audiobook · all channels" color={COLORS.organicGreen} />
-        <StatCard label="Hardcover"         value={(totalSales + 2000 + 200).toLocaleString()} sub="Bookscan + Coach + Rotman 🇨🇦"      color={COLORS.organic}      />
-        <StatCard label="Audiobook"         value={audiobookUnits.toLocaleString()}            sub={audiobookLatest ? `Via Recorded Books · ${audiobookLatest.date}` : 'Via Recorded Books'} color="#8b5cf6" />
-        <StatCard label="Bookscan"          value={totalSales.toLocaleString()}                sub="US Circana retail only (85%+ of all US book sales)" color="#4b6a8a" />
-        <StatCard label="Press Hits"        value={totalPress}                                 pct={`${totalPressWt} weighted pts`} sub="Across all media types" color={COLORS.t1} />
+        <StatCard label="Total Copies Sold" value={totalCopiesSold.toLocaleString()} sub="Hardcover + Audiobook + eBook"    color={COLORS.organicGreen} />
+        <StatCard label="Hardcover"         value={(totalSales + 2000 + 200).toLocaleString()} sub="Bookscan + Coach + Rotman 🇨🇦" color={COLORS.organic} />
+        <StatCard label="Audiobook"         value={audiobookUnits.toLocaleString()} sub={audiobookLatest ? `Via Recorded Books · ${audiobookLatest.date}` : 'Via Recorded Books'} color="#8b5cf6" />
+        <StatCard label="eBook"             value={ebookUnits.toLocaleString()}     sub={ebookLatest ? `As of ${ebookLatest.date}` : 'Digital edition'}                           color="#0ea5e9" />
+        <StatCard label="Bookscan"          value={totalSales.toLocaleString()}     sub="US Circana retail only (85%+ of all US book sales)" color="#4b6a8a" />
+        <StatCard label="Press Hits"        value={totalPress}                      pct={`${totalPressWt} weighted pts`} sub="Across all media types" color={COLORS.t1} />
       </div>
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
         {/* Events card */}
@@ -658,26 +662,43 @@ export default function Dashboard() {
                 </ComposedChart>
               </ResponsiveContainer>
 
-              {/* Audiobook sales log */}
-              {audiobook.length > 0 && (<>
-                <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Audiobook Sales — Recorded Books</h2>
-                <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Periodic reports from Recorded Books. Add a new row to the Audiobook tab in the sheet when you receive an update.</p>
-                {audiobook.length >= 2 ? (
+              {/* Digital sales section */}
+              {(audiobook.length > 0 || ebook.length > 0) && (<>
+                <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Digital Sales</h2>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Periodic reports from Recorded Books (audiobook) and HBR Press (eBook). Add new rows to the Audio & eBook tab as reports come in.</p>
+
+                {/* eBook chart — 5 data points */}
+                {ebook.length >= 2 && (<>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#374151', marginBottom: 4 }}>eBook Sales Over Time</div>
                   <ResponsiveContainer width="100%" height={180}>
-                    <ComposedChart data={audiobook} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                    <ComposedChart data={ebook} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="date" tick={{ fontSize: 10 }} />
                       <YAxis tick={{ fontSize: 10 }} />
-                      <Tooltip formatter={(val) => [val.toLocaleString(), 'Units Sold']} />
-                      <Line type="monotone" dataKey="units" name="Audiobook Units" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 6, fill: '#8b5cf6' }} />
+                      <Tooltip formatter={(val) => [val.toLocaleString(), 'eBook Units']} />
+                      <Line type="monotone" dataKey="units" name="eBook Units" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 5, fill: '#0ea5e9' }} />
                     </ComposedChart>
                   </ResponsiveContainer>
-                ) : (
-                  <div style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: 10, padding: '12px 16px', fontSize: 11, color: '#7c3aed' }}>
-                    📻 <strong>{audiobookUnits.toLocaleString()} units sold</strong> as of {audiobookLatest?.date} · Chart will appear once you have 2+ data points
-                    {audiobookLatest?.notes && <span style={{ color: '#9ca3af' }}> · {audiobookLatest.notes}</span>}
-                  </div>
-                )}
+                </>)}
+
+                {/* Audiobook + eBook stat pills */}
+                <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
+                  {audiobookLatest && (
+                    <div style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: 10, padding: '12px 16px', flex: '1 1 160px' }}>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: '#8b5cf6' }}>{audiobookUnits.toLocaleString()}</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>Audiobook Units</div>
+                      <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>Via Recorded Books · {audiobookLatest.date}</div>
+                      {audiobookLatest.notes && <div style={{ fontSize: 10, color: '#9ca3af' }}>{audiobookLatest.notes}</div>}
+                    </div>
+                  )}
+                  {ebookLatest && (
+                    <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: 10, padding: '12px 16px', flex: '1 1 160px' }}>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: '#0ea5e9' }}>{ebookUnits.toLocaleString()}</div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>eBook Units</div>
+                      <div style={{ fontSize: 10, color: '#9ca3af', marginTop: 2 }}>As of {ebookLatest.date}</div>
+                    </div>
+                  )}
+                </div>
               </>)}
             </>)
           })()}
