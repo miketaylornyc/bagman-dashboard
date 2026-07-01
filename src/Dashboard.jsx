@@ -270,7 +270,10 @@ export default function Dashboard() {
   const totalPressWt    = rawData?.press?.reduce((s, p) => s + (TIER_META[p.tier]?.weight || 1), 0) || 0
   const organicPct      = totalSales > 0 ? Math.round((totalOrganic / totalSales) * 100) : 0
   const bulkPct         = totalSales > 0 ? Math.round((totalBulk    / totalSales) * 100) : 0
-  const totalCopiesSold = totalSales + 2000 + 200 // + Coach direct + Rotman Canada
+  const audiobook       = rawData?.audiobook ?? []
+  const audiobookLatest = audiobook.length > 0 ? audiobook[audiobook.length - 1] : null
+  const audiobookUnits  = audiobookLatest?.units ?? 0
+  const totalCopiesSold = totalSales + 2000 + 200 + audiobookUnits
   const allSocial       = rawData?.social || []
   const totalSocialViews = allSocial.reduce((s, p) => s + p.views, 0)
   const collabPosts     = allSocial.filter(p => p.collab)
@@ -371,11 +374,11 @@ export default function Dashboard() {
 
       {/* Stat Cards */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
-        <StatCard label="Total Copies Sold" value={totalCopiesSold.toLocaleString()} sub="Bookscan + Coach + Rotman 🇨🇦" color={COLORS.organicGreen} />
-        <StatCard label="Bookscan"          value={totalSales.toLocaleString()}       sub="US Circana retail only (85%+ of all US book sales)"  color={COLORS.organic}      />
-        <StatCard label="Organic Sales"     value={totalOrganic.toLocaleString()}     pct={`${organicPct}% of Bookscan`}  sub="Reader-driven retail"   color="#4b6a8a"            />
-        <StatCard label="Bulk / Placement"  value={totalBulk.toLocaleString()}        pct={`${bulkPct}% of Bookscan`}     sub="Corporate & event / B&N" color="#94a3b8"           />
-        <StatCard label="Press Hits"        value={totalPress}                        pct={`${totalPressWt} weighted pts`} sub="Across all media types"  color={COLORS.t1}         />
+        <StatCard label="Total Copies Sold" value={totalCopiesSold.toLocaleString()} sub="Hardcover + Audiobook · all channels" color={COLORS.organicGreen} />
+        <StatCard label="Hardcover"         value={(totalSales + 2000 + 200).toLocaleString()} sub="Bookscan + Coach + Rotman 🇨🇦"      color={COLORS.organic}      />
+        <StatCard label="Audiobook"         value={audiobookUnits.toLocaleString()}            sub={audiobookLatest ? `Via Recorded Books · ${audiobookLatest.date}` : 'Via Recorded Books'} color="#8b5cf6" />
+        <StatCard label="Bookscan"          value={totalSales.toLocaleString()}                sub="US Circana retail only (85%+ of all US book sales)" color="#4b6a8a" />
+        <StatCard label="Press Hits"        value={totalPress}                                 pct={`${totalPressWt} weighted pts`} sub="Across all media types" color={COLORS.t1} />
       </div>
       <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap' }}>
         {/* Events card */}
@@ -654,6 +657,28 @@ export default function Dashboard() {
                   <Line type="monotone" dataKey="rollingAvg" name="4-Wk Rolling Avg" stroke={COLORS.organicGreen} strokeWidth={3} dot={{ r: 4, fill: COLORS.organicGreen }} />
                 </ComposedChart>
               </ResponsiveContainer>
+
+              {/* Audiobook sales log */}
+              {audiobook.length > 0 && (<>
+                <h2 style={{ fontSize: 14, fontWeight: 700, color: '#1a1a2e', margin: '24px 0 4px' }}>Audiobook Sales — Recorded Books</h2>
+                <p style={{ fontSize: 11, color: '#9ca3af', marginBottom: 12 }}>Periodic reports from Recorded Books. Add a new row to the Audiobook tab in the sheet when you receive an update.</p>
+                {audiobook.length >= 2 ? (
+                  <ResponsiveContainer width="100%" height={180}>
+                    <ComposedChart data={audiobook} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="date" tick={{ fontSize: 10 }} />
+                      <YAxis tick={{ fontSize: 10 }} />
+                      <Tooltip formatter={(val) => [val.toLocaleString(), 'Units Sold']} />
+                      <Line type="monotone" dataKey="units" name="Audiobook Units" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 6, fill: '#8b5cf6' }} />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div style={{ background: '#f5f3ff', border: '1px solid #ddd6fe', borderRadius: 10, padding: '12px 16px', fontSize: 11, color: '#7c3aed' }}>
+                    📻 <strong>{audiobookUnits.toLocaleString()} units sold</strong> as of {audiobookLatest?.date} · Chart will appear once you have 2+ data points
+                    {audiobookLatest?.notes && <span style={{ color: '#9ca3af' }}> · {audiobookLatest.notes}</span>}
+                  </div>
+                )}
+              </>)}
             </>)
           })()}
         </>)}

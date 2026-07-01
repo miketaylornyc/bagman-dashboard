@@ -18,6 +18,7 @@ const TABS = {
   social:      '552142358',
   goodreads:   '434944970',
   grSnapshot:  '827853497',
+  audiobook:   '67258967',
 }
 
 const csvUrl = (gid) => `${BASE_URL}?output=csv&gid=${gid}`
@@ -45,7 +46,7 @@ const bool = (v) => v?.toString().toUpperCase() === 'TRUE'
 
 export async function fetchAllData() {
   try {
-    const [bookscanCSV, pressCSV, eventsCSV, bulkCSV, socialCSV, goodreadsCSV, grSnapshotCSV] = await Promise.all([
+    const [bookscanCSV, pressCSV, eventsCSV, bulkCSV, socialCSV, goodreadsCSV, grSnapshotCSV, audiobookCSV] = await Promise.all([
       fetch(csvUrl(TABS.bookscan)).then(r => r.text()),
       fetch(csvUrl(TABS.press)).then(r => r.text()),
       fetch(csvUrl(TABS.events)).then(r => r.text()),
@@ -53,6 +54,7 @@ export async function fetchAllData() {
       fetch(csvUrl(TABS.social)).then(r => r.text()),
       fetch(csvUrl(TABS.goodreads)).then(r => r.text()),
       fetch(csvUrl(TABS.grSnapshot)).then(r => r.text()),
+      fetch(csvUrl(TABS.audiobook)).then(r => r.text()),
     ])
 
     // ── GOODREADS (daily → weekly aggregation) ────────────────────────────────
@@ -155,9 +157,17 @@ export async function fetchAllData() {
       amazon1Star:     num(grSnapshotRows[0]['Amazon 1 Star']),
     } : null
 
-    return { bookscan, press, events, bulk, social, grSnapshot, error: null }
+    // ── AUDIOBOOK SALES (periodic reports from Recorded Books) ───────────────
+    // Columns: Date | Units Sold | Notes
+    const audiobook = parseCSV(audiobookCSV).map(r => ({
+      date:  r['Date'],
+      units: num(r['Units Sold']),
+      notes: r['Notes'] || '',
+    }))
+
+    return { bookscan, press, events, bulk, social, grSnapshot, audiobook, error: null }
   } catch (err) {
     console.error('Failed to fetch sheet data:', err)
-    return { bookscan: [], press: [], events: [], bulk: [], social: [], grSnapshot: null, error: err.message }
+    return { bookscan: [], press: [], events: [], bulk: [], social: [], grSnapshot: null, audiobook: [], error: err.message }
   }
 }
